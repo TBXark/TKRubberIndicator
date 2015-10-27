@@ -13,7 +13,7 @@ let kTKSmallBubbleSize       :CGFloat = 16
 let kTKMainBubbleSize        :CGFloat = 40
 let kTKBubbleXOffsetSpace    :CGFloat = 12
 let kTKBubbleYOffsetSpace    :CGFloat = 8
-let kTKAnimationDuration     :CFTimeInterval  = 1
+let kTKAnimationDuration     :CFTimeInterval  = 0.2
 let kTKSmallBubbleMoveRadius :CGFloat = kTKSmallBubbleSize + kTKBubbleXOffsetSpace
 
 let kTKBackgroundColor  : UIColor = UIColor(red:0.357,  green:0.196,  blue:0.337, alpha:1)
@@ -50,8 +50,13 @@ class TKRubberIndicator : UIControl {
     var numberOfpage :Int  = 5
     var canShowArrow :Bool = false
     
-    var mainBubble    = TKMainBubble()
+//    var mainBubble    = TKMainBubble()
     var smallBubbles  = Array<TKBubbleCell>()
+    var backgroundLayer = CAShapeLayer()
+    var mainBubble      = CAShapeLayer()
+    
+    let bubbleScale  :CGFloat  = 1/3.0
+
     var backLineLayer = CAShapeLayer()
     var currentIndex  = 0
     
@@ -66,19 +71,19 @@ class TKRubberIndicator : UIControl {
         numberOfpage = count
         super.init(frame:frame)
         self.setUpView()
-        assert(numberOfpage > 0, "Count should not be 0")
+        assert(numberOfpage > 0, "Count should not larger than 1")
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.setUpView()
-        assert(numberOfpage > 0, "Count should not be 0")
+        assert(numberOfpage > 0, "Count should not larger than 1")
     }
     
     func setUpView(){
         
         let y = (self.h - (kTKSmallBubbleSize + 2 * kTKBubbleYOffsetSpace))/2
-        let w = CGFloat(numberOfpage - 1) * kTKSmallBubbleSize + kTKMainBubbleSize + CGFloat(numberOfpage + 1) * kTKBubbleXOffsetSpace
+        let w = CGFloat(numberOfpage - 2) * kTKSmallBubbleSize + kTKMainBubbleSize + CGFloat(numberOfpage) * kTKBubbleXOffsetSpace
         let h = kTKSmallBubbleSize + kTKBubbleYOffsetSpace * 2
         let x = (self.w - w)/2
         
@@ -92,123 +97,94 @@ class TKRubberIndicator : UIControl {
         backLineLayer.fillColor = kTKBackgroundColor.CGColor
         self.layer.addSublayer(backLineLayer)
         
-        mainBubble.frame = CGRectMake(x, y - (kTKMainBubbleSize - h)/2, kTKMainBubbleSize, kTKMainBubbleSize)
-        self.layer.addSublayer(mainBubble)
+         let frame = CGRectMake(x, y - (kTKMainBubbleSize - h)/2, kTKMainBubbleSize, kTKMainBubbleSize)
+
+        setupLayer(frame)
+
 
         let bubbleOffset = kTKSmallBubbleSize + kTKBubbleXOffsetSpace
         var bubbleFrame = CGRectMake(x + kTKBubbleXOffsetSpace + bubbleOffset , y + kTKBubbleYOffsetSpace, kTKSmallBubbleSize, kTKSmallBubbleSize)
-        for _ in 0..<numberOfpage{
+        for _ in 0..<(numberOfpage-1){
             let smallBubble = TKBubbleCell()
             smallBubble.frame = bubbleFrame
             self.layer.addSublayer(smallBubble)
             smallBubbles.append(smallBubble)
             bubbleFrame.origin.x += bubbleOffset
-//            smallBubble.zPosition = 1
+            smallBubble.zPosition = 1
         }
-//        mainBubble.bubbleLayer.zPosition = 10
         
         let tap = UITapGestureRecognizer(target: self, action: "tapValueChange:")
         self.addGestureRecognizer(tap)
     }
     
     
+    func setupLayer(frame:CGRect){
+        
+        backgroundLayer.path = UIBezierPath(ovalInRect: frame).CGPath
+        backgroundLayer.fillColor = kTKBackgroundColor.CGColor
+        
+        var frame = CGRectInset(frame, kTKBubbleYOffsetSpace , kTKBubbleYOffsetSpace)
+        let origin = frame.origin
+        frame.origin = CGPointZero
+        mainBubble.path = UIBezierPath(ovalInRect: frame).CGPath
+        mainBubble.fillColor = kTKBigBubbleColor.CGColor
+        frame.origin = origin
+        mainBubble.frame = frame
+        
+        backgroundLayer.zPosition = -1
+        mainBubble.zPosition = 100
+        self.layer.addSublayer(backgroundLayer)
+        self.layer.addSublayer(mainBubble)
+    }
+    
     func tapValueChange(ges:UITapGestureRecognizer){
         let point = ges.locationInView(self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
-            let index = Int(point.x - xPointbegin) / Int(kTKSmallBubbleMoveRadius)
-            if index == currentIndex{
+            var index = Int(point.x - xPointbegin) / Int(kTKSmallBubbleMoveRadius)
+            if index == currentIndex {
                 return
             }
+            if index > numberOfpage{index = numberOfpage - 1}
+            if index < 0{index = 0}
             let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
             let point = CGPointMake(xPointbegin + kTKSmallBubbleMoveRadius * CGFloat(index) + kTKMainBubbleSize/2, yPointbegin - kTKBubbleYOffsetSpace/2)
             let range = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
-            
-//            //PS:当小球运动数大于1时,轮流运动,但是效果不好,所以改成一起运动,但是保留这个接口
-//            let bubbleOffSet = abs(currentIndex - index)
-//            let cellTime = kTKAnimationDuration / Double(bubbleOffSet)
-//            var count = 0
             for index in range{
                 let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
                 let smallBubble = smallBubbles[smallBubbleIndex]
-//                let beginTime = CACurrentMediaTime() + (Double(count) * cellTime)
-//                smallBubble.positionChange(direction, radius: kTKSmallBubbleMoveRadius / 2, duration: cellTime,beginTime:beginTime)
-//                count++
                  smallBubble.positionChange(direction, radius: kTKSmallBubbleMoveRadius / 2, duration:kTKAnimationDuration,beginTime:CACurrentMediaTime())
             }
-            mainBubble.positionChange(direction, point: point, duration: kTKAnimationDuration)
+            mainBubblePositionChange(direction, point: point, duration: kTKAnimationDuration)
             currentIndex = index
             print(index)
         }
     }
     
-    
-}
-
-
-
-
-// MARK: - Main Bubble
-class TKMainBubble : CAShapeLayer {
-    
-    var backgroundLayer = CAShapeLayer()
-    var bubbleLayer     = CAShapeLayer()
-
-    let bubbleScale  :CGFloat  = 1/3.0
-    
-    
-    override init() {
-        super.init()
-        setupLayer()
-    }
-    
-    override init(layer: AnyObject) {
-        super.init(layer:layer)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupLayer()
-    }
-    
-    private func setupLayer(){
-        
-        self.frame = CGRectMake(0, 0, kTKMainBubbleSize, kTKMainBubbleSize)
-
-        backgroundLayer.path = UIBezierPath(ovalInRect: self.bounds).CGPath
-        backgroundLayer.fillColor = kTKBackgroundColor.CGColor
-        self.addSublayer(backgroundLayer)
-        
-        var frame = CGRectInset(self.bounds, kTKBubbleYOffsetSpace , kTKBubbleYOffsetSpace)
-        let origin = frame.origin
-        frame.origin = CGPointZero
-        bubbleLayer.path = UIBezierPath(ovalInRect: frame).CGPath
-        bubbleLayer.fillColor = kTKBigBubbleColor.CGColor
-        frame.origin = origin
-        bubbleLayer.frame = frame
-        self.addSublayer(bubbleLayer)
-    }
-    
-    func positionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
-        
-        
-        point.y += self.bounds.height/2
+    func mainBubblePositionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
         
         let bubbleTransformAnim      = CAKeyframeAnimation(keyPath:"transform")
         bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity),
-                                        NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
-                                        NSValue(CATransform3D: CATransform3DIdentity)]
+            NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
+            NSValue(CATransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
         
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
-        self.position = point
-        CATransaction.commit()
+        point.y += kTKMainBubbleSize/2
+        mainBubble.position = point
+        point.y = 0
+        point.x -=  kTKSmallBubbleMoveRadius + kTKBubbleYOffsetSpace * 3 / 2 + kTKBubbleXOffsetSpace/2
+        backgroundLayer.position = point
         
-        bubbleLayer.addAnimation(bubbleTransformAnim, forKey: "Scale")
+        CATransaction.commit()
+        mainBubble.addAnimation(bubbleTransformAnim, forKey: "Scale")
     }
     
 }
+
+
+
 
 
 
