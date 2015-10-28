@@ -1,6 +1,6 @@
 #  TKRubberIndicator
 
-在 dribbble 上面看到一个很不错的 page control,然后就上 github 上面搜索了一下,发现有 html 版的,合安卓版的,虽然有个小伙伴建立了一个 Swift 项目但是里面并没有什么东西,然后我就决定自己仿一个.
+在 dribbble 上面看到一个很不错的 page control,然后就上 github 上面搜索了一下,发现有 html 版的,和安卓版的(但是我看不懂 java 啊),虽然有个小伙伴建立了一个 Swift 项目但是里面并没有什么东西,然后我就决定自己仿一个.
 
 下面这个是 dribbble 的效果图
 
