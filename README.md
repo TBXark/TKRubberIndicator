@@ -13,8 +13,8 @@
 
 
 * Designed by [Valentyn Khenkin](https://dribbble.com/shots/2090803-Rubber-Indicator?list=searches&tag=indicator&offset=7)
-* [Here](http://codepen.io/machycek/full/eNvyjb/) is the CSS version
-* [Here](https://github.com/LyndonChin/AndroidRubberIndicator) is the Android version
+* [Web 版](http://codepen.io/machycek/full/eNvyjb/)
+* [安卓版](https://github.com/LyndonChin/AndroidRubberIndicator) is the Android version
 
 
 ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS 的小伙伴们,让我看到你们的双手,给我一个星星吧 
