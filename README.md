@@ -93,7 +93,9 @@ class ViewController: UIViewController {
 
 ```
 
+## 注意
 
+当页数为 0 或者 1 的时候, (-,,-)PageControl 是没有意义的,所以我会报一个断言错误
 
 
 ##  关于我
