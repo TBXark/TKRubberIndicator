@@ -34,7 +34,7 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 |---|---|
 |smallBubbleSize|小球尺寸|
 |mainBubbleSize|大球尺寸|
-|bubbleXOffsetSpace|小丘间距|
+|bubbleXOffsetSpace|小球间距|
 |bubbleYOffsetSpace|纵向间距|
 |animationDuration|动画时长|
 |backgroundColor|背景颜色|
