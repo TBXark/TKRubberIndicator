@@ -70,14 +70,25 @@ struct TKRubberIndicatorConfig {
 // MARK: PageControl
 class TKRubberIndicator : UIControl {
     
+    // 页数
+    var numberOfpage : Int  = 5{
+        didSet{
+            if oldValue != numberOfpage{
+                resetRubberIndicator()
+            }
+        }
+    }
+    
     // 当前 Index
     var currentIndex  = 0
-    // 页数
-    var numberOfpage : Int  = 5
+    
     // 事件闭包
     var valueChange  : UIControlValueChangeClosure?
     // 样式配置
     var styleConfig  : TKRubberIndicatorConfig!
+    
+    //手势
+    var indexTap     : UITapGestureRecognizer!
     
     
     // 所有图层
@@ -86,7 +97,7 @@ class TKRubberIndicator : UIControl {
     var mainBubble      = CAShapeLayer()
     var backLineLayer   = CAShapeLayer()
     
-    // 大球缩放比利
+    // 大球缩放比例
     let bubbleScale  :CGFloat  = 1/3.0
     
     // 存储计算用的
@@ -101,17 +112,19 @@ class TKRubberIndicator : UIControl {
         styleConfig = config
         super.init(frame:frame)
         self.setUpView()
-        assert(numberOfpage > 1, "Page count should not larger than 1")
+        assert(numberOfpage > 1, "Page count should larger than 1")
     }
     
     required init?(coder aDecoder: NSCoder) {
         styleConfig = TKRubberIndicatorConfig()
         super.init(coder: aDecoder)
         self.setUpView()
-        assert(numberOfpage > 1, "Page count should not larger than 1")
+        assert(numberOfpage > 1, "Page count should larger than 1")
     }
     
     private func setUpView(){
+        
+        // 一些奇怪的位置计算
         
         let y = (self.h - (styleConfig.smallBubbleSize + 2 * styleConfig.bubbleYOffsetSpace))/2
         let w = CGFloat(numberOfpage - 2) * styleConfig.smallBubbleSize + styleConfig.mainBubbleSize + CGFloat(numberOfpage) * styleConfig.bubbleXOffsetSpace
@@ -141,6 +154,7 @@ class TKRubberIndicator : UIControl {
         self.layer.addSublayer(backgroundLayer)
         
         
+        
         // 大球
         let origin           = layerFrame.origin
         layerFrame.origin    = CGPointZero
@@ -165,40 +179,58 @@ class TKRubberIndicator : UIControl {
         }
         
         // 增加点击手势
-        let tap = UITapGestureRecognizer(target: self, action: "tapValueChange:")
-        self.addGestureRecognizer(tap)
+        indexTap = UITapGestureRecognizer(target: self, action: "tapValueChange:")
+        self.addGestureRecognizer(indexTap)
     }
     
     
+     // 重置控件
+    func resetRubberIndicator(){
+        changIndexToValue(0)
+        smallBubbles.forEach {$0.removeFromSuperlayer()}
+        smallBubbles.removeAll()
+        removeGestureRecognizer(indexTap)
+        setUpView()
+    }
+    
+    
+    
+    // 手势事件
     func tapValueChange(ges:UITapGestureRecognizer){
         let point = ges.locationInView(self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
-            
-            var index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
-            
-            if index >= numberOfpage{index = numberOfpage - 1}
-            if index < 0{index = 0}
-            if index == currentIndex {return}
-            
-            let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
-            let point     = CGPointMake(xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2, yPointbegin - styleConfig.bubbleYOffsetSpace/2)
-            let range     = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
-            
-            for index in range{
-                let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
-                let smallBubble      = smallBubbles[smallBubbleIndex]
-                smallBubble.positionChange(direction, radius: styleConfig.smallBubbleMoveRadius / 2, duration:styleConfig.animationDuration,beginTime:CACurrentMediaTime())
-            }
-            mainBubblePositionChange(direction, point: point, duration: styleConfig.animationDuration)
-            currentIndex = index
-            
-            // 可以使用 Target-Action 监听事件
-            sendActionsForControlEvents(UIControlEvents.ValueChanged)
-            // 也可以使用 闭包 监听事件
-            valueChange?(currentIndex)
+            let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
+            changIndexToValue(index)
         }
     }
     
+    // Index值变化
+    func changIndexToValue(var index:Int){
+        
+        if index >= numberOfpage{index = numberOfpage - 1}
+        if index < 0{index = 0}
+        if index == currentIndex {return}
+        
+        let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
+        let point     = CGPointMake(xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2, yPointbegin - styleConfig.bubbleYOffsetSpace/2)
+        let range     = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
+        
+        for index in range{
+            let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
+            let smallBubble      = smallBubbles[smallBubbleIndex]
+            smallBubble.positionChange(direction, radius: styleConfig.smallBubbleMoveRadius / 2, duration:styleConfig.animationDuration,beginTime:CACurrentMediaTime())
+        }
+        currentIndex = index
+        mainBubblePositionChange(direction, point: point, duration: styleConfig.animationDuration)
+        
+        // 可以使用 Target-Action 监听事件
+        sendActionsForControlEvents(UIControlEvents.ValueChanged)
+        // 也可以使用 闭包 监听事件
+        valueChange?(currentIndex)
+        
+    }
+    
+    // 大球动画
     private func mainBubblePositionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
         
         // 大球缩放动画
@@ -215,8 +247,9 @@ class TKRubberIndicator : UIControl {
         CATransaction.setAnimationDuration(duration)
         point.y += styleConfig.mainBubbleSize/2
         mainBubble.position = point
+
         point.y = 0
-        point.x -=  styleConfig.smallBubbleMoveRadius + styleConfig.bubbleYOffsetSpace * 3 / 2 + styleConfig.bubbleXOffsetSpace/2
+        point.x = (xPointEnd - xPointbegin - styleConfig.bubbleXOffsetSpace/2) / CGFloat(numberOfpage) * CGFloat(currentIndex) - (styleConfig.bubbleYOffsetSpace / 4)
         backgroundLayer.position = point
         CATransaction.commit()
         
@@ -237,7 +270,7 @@ class TKBubbleCell: CAShapeLayer {
     var bubbleLayer = CAShapeLayer()
     let bubbleScale   :CGFloat  = 0.5
     var lastDirection : TKMoveDirection!
-    var styleConfig  : TKRubberIndicatorConfig!
+    var styleConfig   : TKRubberIndicatorConfig!
     
     
     init(style:TKRubberIndicatorConfig) {
