@@ -50,7 +50,7 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 
 **XIB**
 
-	xib 的话,我平时很少用,使用 xib 只能用默认样式初始化,但是可以添加 runtime property 来改变 pageCount,如果想用 xib 又想自定义样式的花,要不就直接修改源代码 :)
+	xib 的话,我平时很少用,使用 xib 只能用默认样式初始化,但是可以添加 runtime property 来改变 pageCount,如果想用 xib 又想自定义样式的话,要不就直接修改源代码,直接改变TKRubberIndicatorConfig的默认值 :)
 
 
 
