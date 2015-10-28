@@ -9,18 +9,23 @@
 import UIKit
 
 
-let kTKSmallBubbleSize       :CGFloat = 16
-let kTKMainBubbleSize        :CGFloat = 40
-let kTKBubbleXOffsetSpace    :CGFloat = 12
-let kTKBubbleYOffsetSpace    :CGFloat = 8
-let kTKAnimationDuration     :CFTimeInterval  = 0.2
-let kTKSmallBubbleMoveRadius :CGFloat = kTKSmallBubbleSize + kTKBubbleXOffsetSpace
+// ValueChange
+typealias UIControlValueChangeClosure = (Any) -> Void
 
-let kTKBackgroundColor  : UIColor = UIColor(red:0.357,  green:0.196,  blue:0.337, alpha:1)
-let kTKSmallBubbleColor : UIColor = UIColor(red:0.961,  green:0.561,  blue:0.518, alpha:1)
-let kTKBigBubbleColor   : UIColor = UIColor(red:0.788,  green:0.216,  blue:0.337, alpha:1)
+// 快速获得 W 和 H
+extension UIView{
+    var w : CGFloat{
+        return self.bounds.width
+    }
+    var h : CGFloat{
+        return self.bounds.height
+    }
+}
 
-// MARK:MoveDorection
+
+// MARK: - MoveDorection
+// 运动方向
+
 enum TKMoveDirection{
     case left
     case right
@@ -34,32 +39,46 @@ enum TKMoveDirection{
     }
 }
 
-extension UIView{
-    var w : CGFloat{
-        return self.bounds.width
-    }
-    var h : CGFloat{
-        return self.bounds.height
-    }
+// MARK: - TKRubberIndicatorConfig
+// 样式配置 (含默认配置)
+
+struct TKRubberIndicatorConfig {
+    // 小球尺寸
+    var smallBubbleSize       :CGFloat        = 16
+    // 大球尺寸
+    var mainBubbleSize        :CGFloat        = 40
+    // 小球间距
+    var bubbleXOffsetSpace    :CGFloat        = 12
+    // 纵向间距
+    var bubbleYOffsetSpace    :CGFloat        = 8
+    // 动画时长
+    var animationDuration     :CFTimeInterval = 0.2
+    // 小球运动半径
+    var smallBubbleMoveRadius : CGFloat {return smallBubbleSize + bubbleXOffsetSpace}
+    
+    var backgroundColor  : UIColor = UIColor(red:0.357,  green:0.196,  blue:0.337, alpha:1)
+    var smallBubbleColor : UIColor = UIColor(red:0.961,  green:0.561,  blue:0.518, alpha:1)
+    var bigBubbleColor   : UIColor = UIColor(red:0.788,  green:0.216,  blue:0.337, alpha:1)
 }
+
+
+
 
 // MARK: PageControl
 class TKRubberIndicator : UIControl {
     
-//    var isAnimate     = false
+    var currentIndex  = 0
     var numberOfpage :Int  = 5
-    var canShowArrow :Bool = false
+    var valueChange  : UIControlValueChangeClosure?
+    var styleConfig  : TKRubberIndicatorConfig!
     
-//    var mainBubble    = TKMainBubble()
     var smallBubbles  = Array<TKBubbleCell>()
     var backgroundLayer = CAShapeLayer()
     var mainBubble      = CAShapeLayer()
+    var backLineLayer = CAShapeLayer()
+
     
     let bubbleScale  :CGFloat  = 1/3.0
-
-    var backLineLayer = CAShapeLayer()
-    var currentIndex  = 0
-    
     
     var xPointbegin  : CGFloat = 0
     var xPointEnd    : CGFloat = 0
@@ -67,24 +86,26 @@ class TKRubberIndicator : UIControl {
     var yPointEnd    : CGFloat = 0
     
     
-    init(frame: CGRect,count:Int) {
+    init(frame: CGRect,count:Int,config:TKRubberIndicatorConfig = TKRubberIndicatorConfig()) {
         numberOfpage = count
+        styleConfig = config
         super.init(frame:frame)
         self.setUpView()
-        assert(numberOfpage > 0, "Count should not larger than 1")
+        assert(numberOfpage > 0, "Page count should not larger than 1")
     }
 
     required init?(coder aDecoder: NSCoder) {
+        styleConfig = TKRubberIndicatorConfig()
         super.init(coder: aDecoder)
         self.setUpView()
-        assert(numberOfpage > 0, "Count should not larger than 1")
+        assert(numberOfpage > 0, "Page count should not larger than 1")
     }
     
-    func setUpView(){
+    private func setUpView(){
         
-        let y = (self.h - (kTKSmallBubbleSize + 2 * kTKBubbleYOffsetSpace))/2
-        let w = CGFloat(numberOfpage - 2) * kTKSmallBubbleSize + kTKMainBubbleSize + CGFloat(numberOfpage) * kTKBubbleXOffsetSpace
-        let h = kTKSmallBubbleSize + kTKBubbleYOffsetSpace * 2
+        let y = (self.h - (styleConfig.smallBubbleSize + 2 * styleConfig.bubbleYOffsetSpace))/2
+        let w = CGFloat(numberOfpage - 2) * styleConfig.smallBubbleSize + styleConfig.mainBubbleSize + CGFloat(numberOfpage) * styleConfig.bubbleXOffsetSpace
+        let h = styleConfig.smallBubbleSize + styleConfig.bubbleYOffsetSpace * 2
         let x = (self.w - w)/2
         
         xPointbegin  = x
@@ -93,19 +114,39 @@ class TKRubberIndicator : UIControl {
         yPointEnd    = y + h
         
         let lineFrame = CGRectMake(x,y,w,h)
+        let frame = CGRectMake(x, y - (styleConfig.mainBubbleSize - h)/2, styleConfig.mainBubbleSize, styleConfig.mainBubbleSize)
+        var layerFrame = CGRectInset(frame, styleConfig.bubbleYOffsetSpace , styleConfig.bubbleYOffsetSpace)
+
+        
+        // 背景的横线
         backLineLayer.path = UIBezierPath(roundedRect:lineFrame, cornerRadius:h/2).CGPath
-        backLineLayer.fillColor = kTKBackgroundColor.CGColor
+        backLineLayer.fillColor = styleConfig.backgroundColor.CGColor
         self.layer.addSublayer(backLineLayer)
         
-         let frame = CGRectMake(x, y - (kTKMainBubbleSize - h)/2, kTKMainBubbleSize, kTKMainBubbleSize)
 
-        setupLayer(frame)
+        // 大球背景的圈
+        backgroundLayer.path = UIBezierPath(ovalInRect: frame).CGPath
+        backgroundLayer.fillColor = styleConfig.backgroundColor.CGColor
+        backgroundLayer.zPosition = -1
+        self.layer.addSublayer(backgroundLayer)
 
-
-        let bubbleOffset = kTKSmallBubbleSize + kTKBubbleXOffsetSpace
-        var bubbleFrame = CGRectMake(x + kTKBubbleXOffsetSpace + bubbleOffset , y + kTKBubbleYOffsetSpace, kTKSmallBubbleSize, kTKSmallBubbleSize)
+        
+        // 大球
+        let origin = layerFrame.origin
+        layerFrame.origin = CGPointZero
+        mainBubble.path = UIBezierPath(ovalInRect: layerFrame).CGPath
+        mainBubble.fillColor = styleConfig.bigBubbleColor.CGColor
+        layerFrame.origin = origin
+        mainBubble.frame = layerFrame
+        mainBubble.zPosition = 100
+        self.layer.addSublayer(mainBubble)
+        
+        
+        // 生成小球
+        let bubbleOffset = styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace
+        var bubbleFrame = CGRectMake(x + styleConfig.bubbleXOffsetSpace + bubbleOffset , y + styleConfig.bubbleYOffsetSpace, styleConfig.smallBubbleSize, styleConfig.smallBubbleSize)
         for _ in 0..<(numberOfpage-1){
-            let smallBubble = TKBubbleCell()
+            let smallBubble = TKBubbleCell(style: styleConfig)
             smallBubble.frame = bubbleFrame
             self.layer.addSublayer(smallBubble)
             smallBubbles.append(smallBubble)
@@ -113,74 +154,63 @@ class TKRubberIndicator : UIControl {
             smallBubble.zPosition = 1
         }
         
+        // 增加点击手势
         let tap = UITapGestureRecognizer(target: self, action: "tapValueChange:")
         self.addGestureRecognizer(tap)
     }
     
     
-    func setupLayer(frame:CGRect){
-        
-        backgroundLayer.path = UIBezierPath(ovalInRect: frame).CGPath
-        backgroundLayer.fillColor = kTKBackgroundColor.CGColor
-        
-        var frame = CGRectInset(frame, kTKBubbleYOffsetSpace , kTKBubbleYOffsetSpace)
-        let origin = frame.origin
-        frame.origin = CGPointZero
-        mainBubble.path = UIBezierPath(ovalInRect: frame).CGPath
-        mainBubble.fillColor = kTKBigBubbleColor.CGColor
-        frame.origin = origin
-        mainBubble.frame = frame
-        
-        backgroundLayer.zPosition = -1
-        mainBubble.zPosition = 100
-        self.layer.addSublayer(backgroundLayer)
-        self.layer.addSublayer(mainBubble)
-    }
-    
     func tapValueChange(ges:UITapGestureRecognizer){
         let point = ges.locationInView(self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
-            var index = Int(point.x - xPointbegin) / Int(kTKSmallBubbleMoveRadius)
-            if index == currentIndex {
-                return
-            }
-            if index > numberOfpage{index = numberOfpage - 1}
+            
+            var index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
+
+            if index >= numberOfpage{index = numberOfpage - 1}
             if index < 0{index = 0}
+            if index == currentIndex {return}
+            
             let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
-            let point = CGPointMake(xPointbegin + kTKSmallBubbleMoveRadius * CGFloat(index) + kTKMainBubbleSize/2, yPointbegin - kTKBubbleYOffsetSpace/2)
+            let point = CGPointMake(xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2, yPointbegin - styleConfig.bubbleYOffsetSpace/2)
             let range = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
             for index in range{
                 let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
                 let smallBubble = smallBubbles[smallBubbleIndex]
-                 smallBubble.positionChange(direction, radius: kTKSmallBubbleMoveRadius / 2, duration:kTKAnimationDuration,beginTime:CACurrentMediaTime())
+                 smallBubble.positionChange(direction, radius: styleConfig.smallBubbleMoveRadius / 2, duration:styleConfig.animationDuration,beginTime:CACurrentMediaTime())
             }
-            mainBubblePositionChange(direction, point: point, duration: kTKAnimationDuration)
+            mainBubblePositionChange(direction, point: point, duration: styleConfig.animationDuration)
             currentIndex = index
-            print(index)
+            
+            //可以使用 Target-Action 监听事件
+            sendActionsForControlEvents(UIControlEvents.ValueChanged)
+            // 也可以使用 闭包 监听事件
+            valueChange?(currentIndex)
         }
     }
     
-    func mainBubblePositionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
+    private func mainBubblePositionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
         
+        // 大球缩放动画
         let bubbleTransformAnim      = CAKeyframeAnimation(keyPath:"transform")
         bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity),
-            NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
-            NSValue(CATransform3D: CATransform3DIdentity)]
+                                        NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
+                                        NSValue(CATransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
         
+        
+        // 大球移动动画,用隐式动画大球的位置会真正的改变
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
-        point.y += kTKMainBubbleSize/2
+        point.y += styleConfig.mainBubbleSize/2
         mainBubble.position = point
         point.y = 0
-        point.x -=  kTKSmallBubbleMoveRadius + kTKBubbleYOffsetSpace * 3 / 2 + kTKBubbleXOffsetSpace/2
+        point.x -=  styleConfig.smallBubbleMoveRadius + styleConfig.bubbleYOffsetSpace * 3 / 2 + styleConfig.bubbleXOffsetSpace/2
         backgroundLayer.position = point
-        
         CATransaction.commit()
+        
         mainBubble.addAnimation(bubbleTransformAnim, forKey: "Scale")
     }
-    
 }
 
 
@@ -196,8 +226,11 @@ class TKBubbleCell: CAShapeLayer {
     var bubbleLayer = CAShapeLayer()
     let bubbleScale   :CGFloat  = 0.5
     var lastDirection : TKMoveDirection!
+    var styleConfig  : TKRubberIndicatorConfig!
+
     
-    override init() {
+    init(style:TKRubberIndicatorConfig) {
+        styleConfig = style
         super.init()
         setupLayer()
     }
@@ -212,14 +245,15 @@ class TKBubbleCell: CAShapeLayer {
     }
     
     private func setupLayer(){
-        self.frame = CGRectMake(0, 0, kTKSmallBubbleSize, kTKSmallBubbleSize)
+        self.frame = CGRectMake(0, 0, styleConfig.smallBubbleSize, styleConfig.smallBubbleSize)
         bubbleLayer.path = UIBezierPath(ovalInRect: self.bounds).CGPath
-        bubbleLayer.fillColor = kTKSmallBubbleColor.CGColor
-        bubbleLayer.strokeColor = kTKBackgroundColor.CGColor
-        bubbleLayer.lineWidth = kTKBubbleXOffsetSpace / 8
+        bubbleLayer.fillColor = styleConfig.smallBubbleColor.CGColor
+        bubbleLayer.strokeColor = styleConfig.backgroundColor.CGColor
+        bubbleLayer.lineWidth = styleConfig.bubbleXOffsetSpace / 8
         self.addSublayer(bubbleLayer)
     }
     
+    // beginTime 本来是留给小球轮播用的,但是效果不好就没用了
     func positionChange(direction:TKMoveDirection,radius:CGFloat,duration:CFTimeInterval,beginTime:CFTimeInterval){
         let toLeft = direction.toBool()
         let movePath = UIBezierPath()
@@ -231,6 +265,7 @@ class TKBubbleCell: CAShapeLayer {
         
         movePath.addArcWithCenter(center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: toLeft)
         
+        // 小球整体沿着圆弧运动,但是当圆弧运动动画合形变动画叠加在一起的时候,就没有了向心作用,所以就把形变动画放在子 Layer 里面
         let positionAnimation = CAKeyframeAnimation(keyPath: "position")
         positionAnimation.duration = duration
         positionAnimation.beginTime = beginTime
@@ -241,6 +276,8 @@ class TKBubbleCell: CAShapeLayer {
         positionAnimation.fillMode = kCAFillModeBoth
         positionAnimation.delegate = self
         
+        
+        // 小球变形动画,小球变形实际上只是 Y 轴上的 Scale
         let bubbleTransformAnim      = CAKeyframeAnimation(keyPath:"transform")
         bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity),
                                         NSValue(CATransform3D: CATransform3DMakeScale(1,bubbleScale, 1)),
@@ -253,17 +290,19 @@ class TKBubbleCell: CAShapeLayer {
         self.addAnimation(positionAnimation, forKey: "Position")
     }
     
-    func shakeAnimate(){
-        // TODO: 未解决,闪屏问题
+    private func shakeAnimate(){
+        // TODO: 未解决,闪烁问题
+        // 没找到办法在球做完圆弧运动后保持状态的办法,这里只能关掉隐式动画强行改变未知
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         self.opacity = 0
         var point = self.position
-        point.x += (kTKSmallBubbleSize + kTKBubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
+        point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
         self.position = point
         self.opacity = 1
         CATransaction.commit()
 
+        // 最后小球鬼畜的抖动一下
         let bubbleShakeAnim = CAKeyframeAnimation(keyPath: "position")
         bubbleShakeAnim.duration = 0.01
         bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)),
@@ -282,6 +321,7 @@ class TKBubbleCell: CAShapeLayer {
             }
         }
     }
+    
     
     
 }
