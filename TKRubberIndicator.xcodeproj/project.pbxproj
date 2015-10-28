@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A42F80D1BE06B5100251FFA /* rubberindicator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6A42F80C1BE06B5100251FFA /* rubberindicator.gif */; };
 		6A555ECA1BDE277B00FC36E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A555EC91BDE277B00FC36E6 /* AppDelegate.swift */; };
 		6A555ECC1BDE277B00FC36E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A555ECB1BDE277B00FC36E6 /* ViewController.swift */; };
 		6A555ECF1BDE277B00FC36E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A555ECD1BDE277B00FC36E6 /* Main.storyboard */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6A42F80C1BE06B5100251FFA /* rubberindicator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = rubberindicator.gif; sourceTree = "<group>"; };
 		6A555EC61BDE277B00FC36E6 /* TKRubberIndicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TKRubberIndicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A555EC91BDE277B00FC36E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A555ECB1BDE277B00FC36E6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 		6A555EC81BDE277B00FC36E6 /* TKRubberIndicator */ = {
 			isa = PBXGroup;
 			children = (
+				6A42F80C1BE06B5100251FFA /* rubberindicator.gif */,
 				6A555EC91BDE277B00FC36E6 /* AppDelegate.swift */,
 				6A555ECB1BDE277B00FC36E6 /* ViewController.swift */,
 				6A555EDB1BDE291500FC36E6 /* TKRubberIndicator.swift */,
@@ -128,6 +131,7 @@
 			files = (
 				6A555ED41BDE277B00FC36E6 /* LaunchScreen.storyboard in Resources */,
 				6A555ED11BDE277B00FC36E6 /* Assets.xcassets in Resources */,
+				6A42F80D1BE06B5100251FFA /* rubberindicator.gif in Resources */,
 				6A555ECF1BDE277B00FC36E6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,6 +293,7 @@
 				6A555EDA1BDE277B00FC36E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
