@@ -53,6 +53,40 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 	xib 的话,我平时很少用,使用 xib 只能用默认样式初始化,但是可以添加 runtime property 来改变 pageCount,如果想用 xib 又想自定义样式的话,要不就直接修改源代码,直接改变TKRubberIndicatorConfig的默认值 :)
 
 
+#### ValueChange事件
+这里提供 闭包和 传统的 Target-Action 两种方式
+
+```
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        
+        self.view.backgroundColor = UIColor(red:0.553,  green:0.376,  blue:0.549, alpha:1)
+        let config = TKRubberIndicatorConfig()
+        let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 5, config: config)
+        page.center = self.view.center
+        page.valueChange = {(num) -> Void in
+            print("Closure : Page is \(num)")
+        }
+        page.addTarget(self, action: "targetActionValueChange:", forControlEvents: UIControlEvents.ValueChanged)
+        self.view.addSubview(page)
+    }
+    
+    func targetActionValueChange(page:TKRubberIndicator){
+        print("Target-Action : Page is \(page.currentIndex)")
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+}
+
+```
+
+
+
 
 ##  关于我
 
