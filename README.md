@@ -103,6 +103,10 @@ class ViewController: UIViewController {
 * [weibo](http://weibo.com/tbxark)
 * [blog](http://tbxark.github.io)
 
+
+## 其他
+这里还有一个 动画的 Swift 做得 Switch 的集合大家也可以瞅瞅 [这里](https://github.com/TBXark/TKSwitcherCollection)
+
 ## 协议
 
     MIT
