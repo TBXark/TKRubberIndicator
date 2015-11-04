@@ -61,7 +61,7 @@ struct TKRubberIndicatorConfig {
     // 小球颜色
     var smallBubbleColor : UIColor = UIColor(red:0.961,  green:0.561,  blue:0.518, alpha:1)
     // 大球颜色
-    var bigBubbleColor   : UIColor = UIColor(red:0.788,  green:0.216,  blue:0.337, alpha:1)
+    var mainBubbleColor   : UIColor = UIColor(red:0.788,  green:0.216,  blue:0.337, alpha:1)
 }
 
 
@@ -159,7 +159,7 @@ class TKRubberIndicator : UIControl {
         let origin           = layerFrame.origin
         layerFrame.origin    = CGPointZero
         mainBubble.path      = UIBezierPath(ovalInRect: layerFrame).CGPath
-        mainBubble.fillColor = styleConfig.bigBubbleColor.CGColor
+        mainBubble.fillColor = styleConfig.mainBubbleColor.CGColor
         layerFrame.origin    = origin
         mainBubble.frame     = layerFrame
         mainBubble.zPosition = 100
