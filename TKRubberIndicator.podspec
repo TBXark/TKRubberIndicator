@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name         = "TKRubberIndicator"
+  s.name         = "TKRubberPageControl"
   s.version      = "1.0.0"
   s.summary      = "A rubber pagec ontrol in Swift."
   s.homepage     = "https://github.com/TBXark/TKRubberIndicator"
