@@ -40,7 +40,7 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 |animationDuration|动画时长|
 |backgroundColor|背景颜色|
 |smallBubbleColor|小球颜色|
-|bigBubbleColor|大球颜色|
+|mainBubbleColor|大球颜色|
 
 #### 初始化
 
