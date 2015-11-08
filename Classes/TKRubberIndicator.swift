@@ -55,7 +55,7 @@ struct TKRubberIndicatorConfig {
     // 纵向间距
     var bubbleYOffsetSpace    :CGFloat        = 8
     // 动画时长
-    var animationDuration     :CFTimeInterval = 2
+    var animationDuration     :CFTimeInterval = 0.2
     // 小球运动半径
     var smallBubbleMoveRadius : CGFloat {return smallBubbleSize + bubbleXOffsetSpace}
     
@@ -348,11 +348,12 @@ class TKBubbleCell: CAShapeLayer {
         bubbleShakeAnim.beginTime = beginTime + duration;
         bubbleShakeAnim.duration = 0.01
         bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(4, 0)),
+            NSValue(CGPoint: CGPointMake(0, 4)),
             NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(-4,0)),
+            NSValue(CGPoint: CGPointMake(0,-4)),
             NSValue(CGPoint: CGPointMake(0, 0)),]
         bubbleShakeAnim.repeatCount = 10
+        bubbleShakeAnim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         self.bubbleLayer.addAnimation(bubbleShakeAnim, forKey: "Shake")
         
     }
