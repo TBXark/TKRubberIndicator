@@ -23,6 +23,9 @@ extension UIView{
 }
 
 
+
+
+
 // MARK: - MoveDorection
 // 运动方向
 
@@ -52,7 +55,7 @@ struct TKRubberIndicatorConfig {
     // 纵向间距
     var bubbleYOffsetSpace    :CGFloat        = 8
     // 动画时长
-    var animationDuration     :CFTimeInterval = 0.2
+    var animationDuration     :CFTimeInterval = 2
     // 小球运动半径
     var smallBubbleMoveRadius : CGFloat {return smallBubbleSize + bubbleXOffsetSpace}
     
@@ -320,7 +323,8 @@ class TKBubbleCell: CAShapeLayer {
         positionAnimation.calculationMode = kCAAnimationPaced;
         positionAnimation.rotationMode = kCAAnimationRotateAuto;
         positionAnimation.path = movePath.CGPath
-        positionAnimation.fillMode = kCAFillModeBoth
+        positionAnimation.fillMode = kCAFillModeForwards
+        positionAnimation.removedOnCompletion = true
         positionAnimation.delegate = self
         
         
@@ -336,36 +340,37 @@ class TKBubbleCell: CAShapeLayer {
         
         bubbleLayer.addAnimation(bubbleTransformAnim, forKey: "Scale")
         self.addAnimation(positionAnimation, forKey: "Position")
-    }
-    
-    private func shakeAnimate(){
-        // TODO: 未解决,闪烁问题
-        // 没找到办法在球做完圆弧运动后保持状态的办法,这里只能关掉隐式动画强行改变位置
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        self.opacity = 0
-        var point = self.position
-        point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
-        self.position = point
-        self.opacity = 1
-        CATransaction.commit()
+        
+        
         
         // 最后让小球鬼畜的抖动一下
         let bubbleShakeAnim = CAKeyframeAnimation(keyPath: "position")
+        bubbleShakeAnim.beginTime = beginTime + duration;
         bubbleShakeAnim.duration = 0.01
         bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(0, 4)),
+            NSValue(CGPoint: CGPointMake(4, 0)),
             NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(0,-4)),
+            NSValue(CGPoint: CGPointMake(-4,0)),
             NSValue(CGPoint: CGPointMake(0, 0)),]
         bubbleShakeAnim.repeatCount = 10
         self.bubbleLayer.addAnimation(bubbleShakeAnim, forKey: "Shake")
+        
     }
+    
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         if let animate = anim as? CAKeyframeAnimation{
             if animate.keyPath == "position"{
-                shakeAnimate()
+                CATransaction.begin()
+                // 改变小球实际的位置
+                CATransaction.setDisableActions(true)
+                self.opacity = 0
+                var point = self.position
+                point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
+                print(point)
+                self.position = point
+                self.opacity = 1
+                CATransaction.commit()
             }
         }
     }
