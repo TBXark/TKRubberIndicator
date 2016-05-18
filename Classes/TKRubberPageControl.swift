@@ -1,6 +1,6 @@
 //
-//  TKRubberIndicator.swift
-//  TKRubberIndicator
+//  TKRubberPageControl.swift
+//  TKRubberPageControl
 //
 //  Created by Tbxark on 15/10/26.
 //  Copyright © 2015年 TBXark. All rights reserved.
@@ -42,10 +42,10 @@ enum TKMoveDirection{
     }
 }
 
-// MARK: - TKRubberIndicatorConfig
+// MARK: - TKRubberPageControlConfig
 // 样式配置 (含默认配置)
 
-struct TKRubberIndicatorConfig {
+struct TKRubberPageControlConfig {
     // 小球尺寸
     var smallBubbleSize       : CGFloat        = 16
     // 大球尺寸
@@ -71,7 +71,7 @@ struct TKRubberIndicatorConfig {
 
 
 // MARK: PageControl
-class TKRubberIndicator : UIControl {
+class TKRubberPageControl : UIControl {
     
     // 页数
     var numberOfpage : Int  = 5{
@@ -88,7 +88,7 @@ class TKRubberIndicator : UIControl {
     // 事件闭包
     var valueChange  : UIControlValueChangeClosure?
     // 样式配置
-    var styleConfig  : TKRubberIndicatorConfig!
+    var styleConfig  : TKRubberPageControlConfig!
     
     //手势
     var indexTap     : UITapGestureRecognizer!
@@ -110,7 +110,7 @@ class TKRubberIndicator : UIControl {
     var yPointEnd    : CGFloat = 0
     
     
-    init(frame: CGRect, count: Int, config: TKRubberIndicatorConfig = TKRubberIndicatorConfig()) {
+    init(frame: CGRect, count: Int, config: TKRubberPageControlConfig = TKRubberPageControlConfig()) {
         numberOfpage = count
         styleConfig = config
         super.init(frame: frame)
@@ -118,7 +118,7 @@ class TKRubberIndicator : UIControl {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        styleConfig = TKRubberIndicatorConfig()
+        styleConfig = TKRubberPageControlConfig()
         super.init(coder: aDecoder)
         self.setUpView()
     }
@@ -180,7 +180,7 @@ class TKRubberIndicator : UIControl {
         }
         
         // 增加点击手势
-        indexTap = UITapGestureRecognizer(target: self, action: #selector(TKRubberIndicator.tapValueChange(_: )))
+        indexTap = UITapGestureRecognizer(target: self, action: #selector(TKRubberPageControl.tapValueChange(_: )))
         self.addGestureRecognizer(indexTap)
     }
     
@@ -271,10 +271,10 @@ class TKBubbleCell: CAShapeLayer {
     var bubbleLayer = CAShapeLayer()
     let bubbleScale   : CGFloat  = 0.5
     var lastDirection : TKMoveDirection!
-    var styleConfig   : TKRubberIndicatorConfig!
+    var styleConfig   : TKRubberPageControlConfig!
     
     
-    init(style: TKRubberIndicatorConfig) {
+    init(style: TKRubberPageControlConfig) {
         styleConfig = style
         super.init()
         setupLayer()
