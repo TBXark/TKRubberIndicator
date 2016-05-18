@@ -34,9 +34,9 @@ enum TKMoveDirection{
     case right
     func toBool() -> Bool{
         switch self{
-        case .left:
+        case .left: 
             return true
-        case .right:
+        case .right: 
             return false
         }
     }
@@ -47,24 +47,24 @@ enum TKMoveDirection{
 
 struct TKRubberIndicatorConfig {
     // 小球尺寸
-    var smallBubbleSize       :CGFloat        = 16
+    var smallBubbleSize       : CGFloat        = 16
     // 大球尺寸
-    var mainBubbleSize        :CGFloat        = 40
+    var mainBubbleSize        : CGFloat        = 40
     // 小球间距
-    var bubbleXOffsetSpace    :CGFloat        = 12
+    var bubbleXOffsetSpace    : CGFloat        = 12
     // 纵向间距
-    var bubbleYOffsetSpace    :CGFloat        = 8
+    var bubbleYOffsetSpace    : CGFloat        = 8
     // 动画时长
-    var animationDuration     :CFTimeInterval = 0.2
+    var animationDuration     : CFTimeInterval = 0.2
     // 小球运动半径
     var smallBubbleMoveRadius : CGFloat {return smallBubbleSize + bubbleXOffsetSpace}
     
     // 横条背景颜色
-    var backgroundColor  : UIColor = UIColor(red:0.357,  green:0.196,  blue:0.337, alpha:1)
+    var backgroundColor  : UIColor = UIColor(red: 0.357, green: 0.196, blue: 0.337, alpha: 1)
     // 小球颜色
-    var smallBubbleColor : UIColor = UIColor(red:0.961,  green:0.561,  blue:0.518, alpha:1)
+    var smallBubbleColor : UIColor = UIColor(red: 0.961, green: 0.561, blue: 0.518, alpha: 1)
     // 大球颜色
-    var bigBubbleColor   : UIColor = UIColor(red:0.788,  green:0.216,  blue:0.337, alpha:1)
+    var bigBubbleColor   : UIColor = UIColor(red: 0.788, green: 0.216, blue: 0.337, alpha: 1)
 }
 
 
@@ -101,7 +101,7 @@ class TKRubberIndicator : UIControl {
     var backLineLayer   = CAShapeLayer()
     
     // 大球缩放比例
-    let bubbleScale  :CGFloat  = 1/3.0
+    let bubbleScale  : CGFloat  = 1/3.0
     
     // 存储计算用的
     var xPointbegin  : CGFloat = 0
@@ -110,19 +110,17 @@ class TKRubberIndicator : UIControl {
     var yPointEnd    : CGFloat = 0
     
     
-    init(frame: CGRect,count:Int,config:TKRubberIndicatorConfig = TKRubberIndicatorConfig()) {
+    init(frame: CGRect, count: Int, config: TKRubberIndicatorConfig = TKRubberIndicatorConfig()) {
         numberOfpage = count
         styleConfig = config
-        super.init(frame:frame)
+        super.init(frame: frame)
         self.setUpView()
-        assert(numberOfpage > 1, "Page count should larger than 1")
     }
     
     required init?(coder aDecoder: NSCoder) {
         styleConfig = TKRubberIndicatorConfig()
         super.init(coder: aDecoder)
         self.setUpView()
-        assert(numberOfpage > 1, "Page count should larger than 1")
     }
     
     private func setUpView(){
@@ -139,13 +137,13 @@ class TKRubberIndicator : UIControl {
         yPointbegin  = y
         yPointEnd    = y + h
         
-        let lineFrame = CGRectMake(x,y,w,h)
+        let lineFrame = CGRectMake(x, y, w, h)
         let frame     = CGRectMake(x, y - (styleConfig.mainBubbleSize - h)/2, styleConfig.mainBubbleSize, styleConfig.mainBubbleSize)
         var layerFrame = CGRectInset(frame, styleConfig.bubbleYOffsetSpace , styleConfig.bubbleYOffsetSpace)
         
         
         // 背景的横线
-        backLineLayer.path      = UIBezierPath(roundedRect:lineFrame, cornerRadius:h/2).CGPath
+        backLineLayer.path      = UIBezierPath(roundedRect: lineFrame, cornerRadius: h/2).CGPath
         backLineLayer.fillColor = styleConfig.backgroundColor.CGColor
         self.layer.addSublayer(backLineLayer)
         
@@ -182,7 +180,7 @@ class TKRubberIndicator : UIControl {
         }
         
         // 增加点击手势
-        indexTap = UITapGestureRecognizer(target: self, action: "tapValueChange:")
+        indexTap = UITapGestureRecognizer(target: self, action: #selector(TKRubberIndicator.tapValueChange(_: )))
         self.addGestureRecognizer(indexTap)
     }
     
@@ -199,7 +197,7 @@ class TKRubberIndicator : UIControl {
     
     
     // 手势事件
-    func tapValueChange(ges:UITapGestureRecognizer){
+    func tapValueChange(ges: UITapGestureRecognizer){
         let point = ges.locationInView(self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
             let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
@@ -208,8 +206,8 @@ class TKRubberIndicator : UIControl {
     }
     
     // Index值变化
-    func changIndexToValue(var index:Int){
-        
+    func changIndexToValue(valueindex: Int){
+        var index = valueindex
         if index >= numberOfpage{index = numberOfpage - 1}
         if index < 0{index = 0}
         if index == currentIndex {return}
@@ -221,10 +219,10 @@ class TKRubberIndicator : UIControl {
         for index in range{
             let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
             let smallBubble      = smallBubbles[smallBubbleIndex]
-            smallBubble.positionChange(direction, radius: styleConfig.smallBubbleMoveRadius / 2, duration:styleConfig.animationDuration,beginTime:CACurrentMediaTime())
+            smallBubble.positionChange(direction, radius: styleConfig.smallBubbleMoveRadius / 2, duration: styleConfig.animationDuration, beginTime: CACurrentMediaTime())
         }
         currentIndex = index
-        mainBubblePositionChange(direction, point: point, duration: styleConfig.animationDuration)
+        mainBubblePositionChange(direction, position: point, duration: styleConfig.animationDuration)
         
         // 可以使用 Target-Action 监听事件
         sendActionsForControlEvents(UIControlEvents.ValueChanged)
@@ -234,18 +232,18 @@ class TKRubberIndicator : UIControl {
     }
     
     // 大球动画
-    private func mainBubblePositionChange(direction:TKMoveDirection,var point:CGPoint,duration:Double){
-        
+    private func mainBubblePositionChange(direction: TKMoveDirection, position: CGPoint, duration: Double){
+        var point = position
         // 大球缩放动画
-        let bubbleTransformAnim      = CAKeyframeAnimation(keyPath:"transform")
-        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity),
-            NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
+        let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
+        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity), 
+            NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)), 
             NSValue(CATransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
         
         
-        // 大球移动动画,用隐式动画大球的位置会真正的改变
+        // 大球移动动画, 用隐式动画大球的位置会真正的改变
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         point.y += styleConfig.mainBubbleSize/2
@@ -271,12 +269,12 @@ class TKBubbleCell: CAShapeLayer {
     
     
     var bubbleLayer = CAShapeLayer()
-    let bubbleScale   :CGFloat  = 0.5
+    let bubbleScale   : CGFloat  = 0.5
     var lastDirection : TKMoveDirection!
     var styleConfig   : TKRubberIndicatorConfig!
     
     
-    init(style:TKRubberIndicatorConfig) {
+    init(style: TKRubberIndicatorConfig) {
         styleConfig = style
         super.init()
         setupLayer()
@@ -302,8 +300,8 @@ class TKBubbleCell: CAShapeLayer {
         self.addSublayer(bubbleLayer)
     }
     
-    // beginTime 本来是留给小球轮播用的,但是效果不好就没用了
-    func positionChange(direction:TKMoveDirection,radius:CGFloat,duration:CFTimeInterval,beginTime:CFTimeInterval){
+    // beginTime 本来是留给小球轮播用的, 但是效果不好就没用了
+    func positionChange(direction: TKMoveDirection, radius: CGFloat, duration: CFTimeInterval, beginTime: CFTimeInterval){
         
         let toLeft = direction.toBool()
         let movePath = UIBezierPath()
@@ -315,7 +313,7 @@ class TKBubbleCell: CAShapeLayer {
         
         movePath.addArcWithCenter(center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: toLeft)
         
-        // 小球整体沿着圆弧运动,但是当圆弧运动动画合形变动画叠加在一起的时候,就没有了向心作用,所以就把形变动画放在子 Layer 里面
+        // 小球整体沿着圆弧运动, 但是当圆弧运动动画合形变动画叠加在一起的时候, 就没有了向心作用, 所以就把形变动画放在子 Layer 里面
         let positionAnimation = CAKeyframeAnimation(keyPath: "position")
         positionAnimation.duration = duration
         positionAnimation.beginTime = beginTime
@@ -328,10 +326,10 @@ class TKBubbleCell: CAShapeLayer {
         positionAnimation.delegate = self
         
         
-        // 小球变形动画,小球变形实际上只是 Y 轴上的 Scale
-        let bubbleTransformAnim      = CAKeyframeAnimation(keyPath:"transform")
-        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity),
-            NSValue(CATransform3D: CATransform3DMakeScale(1,bubbleScale, 1)),
+        // 小球变形动画, 小球变形实际上只是 Y 轴上的 Scale
+        let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
+        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity), 
+            NSValue(CATransform3D: CATransform3DMakeScale(1, bubbleScale, 1)), 
             NSValue(CATransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
@@ -347,11 +345,11 @@ class TKBubbleCell: CAShapeLayer {
         let bubbleShakeAnim = CAKeyframeAnimation(keyPath: "position")
         bubbleShakeAnim.beginTime = beginTime + duration;
         bubbleShakeAnim.duration = 0.01
-        bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(0, 4)),
-            NSValue(CGPoint: CGPointMake(0, 0)),
-            NSValue(CGPoint: CGPointMake(0,-4)),
-            NSValue(CGPoint: CGPointMake(0, 0)),]
+        bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)), 
+            NSValue(CGPoint: CGPointMake(0, 4)), 
+            NSValue(CGPoint: CGPointMake(0, 0)), 
+            NSValue(CGPoint: CGPointMake(0, -4)), 
+            NSValue(CGPoint: CGPointMake(0, 0)), ]
         bubbleShakeAnim.repeatCount = 10
         bubbleShakeAnim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         self.bubbleLayer.addAnimation(bubbleShakeAnim, forKey: "Shake")
