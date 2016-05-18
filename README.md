@@ -24,7 +24,7 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 ## 使用 
 
 #### 已经使用POD托管
->pod 'TKRubberIndicator'
+> pod 'TKRubberPageControl', '~> 1.0.4'
 
 #### 直接下载工程
 > git clone https://github.com/TBXark/TKRubberIndicator.git
