@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  TKRubberIndicator
+//  TKRubberPageControl
 //
 //  Created by Tbxark on 15/10/26.
 //  Copyright © 2015年 TBXark. All rights reserved.

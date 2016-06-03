@@ -23,9 +23,11 @@ ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS �
 
 ## 使用 
 
-还没有研究怎么搞 Cocoapod, 所以大家只能下载下来把文件 复制到工程里面使用,我把所有的类放到一个文件里面了
+#### 已经使用POD托管
+> pod 'TKRubberPageControl', '~> 1.0.4'
 
-	git clone https://github.com/TBXark/TKRubberIndicator.git
+#### 直接下载工程
+> git clone https://github.com/TBXark/TKRubberIndicator.git
 
 ##  API
 
@@ -93,11 +95,6 @@ class ViewController: UIViewController {
 
 ```
 
-## 注意
-
-当页数为 0 或者 1 的时候, (-,,-)PageControl 是没有意义的,所以我会报一个断言错误
-
-
 ##  关于我
 
 * [weibo](http://weibo.com/tbxark)
@@ -109,4 +106,26 @@ class ViewController: UIViewController {
 
 ## 协议
 
-    MIT
+
+The MIT License (MIT)
+
+Copyright (c) 2015 TBXark
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+

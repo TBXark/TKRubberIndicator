@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  TKRubberIndicator
+//  TKRubberPageControl
 //
 //  Created by Tbxark on 15/10/26.
 //  Copyright © 2015年 TBXark. All rights reserved.
@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
+    let page = TKRubberPageControl(frame: CGRectMake(100, 100, 200, 100), count: 6)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         page.valueChange = {(num) -> Void in
             print("Closure : Page is \(num)")
         }
-        page.addTarget(self, action: "targetActionValueChange:", forControlEvents: UIControlEvents.ValueChanged)
+        page.addTarget(self, action: #selector(ViewController.targetActionValueChange(_:)), forControlEvents: UIControlEvents.ValueChanged)
         self.view.addSubview(page)
 
 
@@ -31,7 +31,7 @@ class ViewController: UIViewController {
     @IBAction func pageCountChange(sender: UISegmentedControl) {
         page.numberOfpage = (sender.selectedSegmentIndex + 1) * 2
     }
-    func targetActionValueChange(page:TKRubberIndicator){
+    func targetActionValueChange(page:TKRubberPageControl){
         print("Target-Action : Page is \(page.currentIndex)")
     }
 
