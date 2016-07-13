@@ -1,8 +1,9 @@
 # TKRubberIndicator
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/ibireme/YYWebImage/master/LICENSE)&nbsp;
-[![CocoaPods](http://img.shields.io/cocoapods/v/TKRadarChart.svg?style=flat)](http://cocoapods.org/?q= TKRadarChart)&nbsp;
-[![CocoaPods](http://img.shields.io/cocoapods/p/YYWebImage.svg?style=flat)](http://cocoapods.org/?q= TKRadarChart)&nbsp;
-[![Support](https://img.shields.io/badge/support-iOS%208%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)&nbsp;
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
+[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
+[![CocoaPods](http://img.shields.io/cocoapods/p/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
+[![Support](https://img.shields.io/badge/support-iOS%208%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)
+
 ---
 在 dribbble 上面看到一个很不错的 page control,然后就上 github 上面搜索了一下,发现有 html 版的,和安卓版的(但是我看不懂 java 啊),虽然有个小伙伴建立了一个 Swift 项目但是里面并没有什么东西,然后我就决定自己仿一个.
 
