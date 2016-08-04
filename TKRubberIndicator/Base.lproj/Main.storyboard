@@ -21,10 +21,10 @@
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Oor-7f-g0b">
                                 <rect key="frame" x="20" y="552" width="560" height="29"/>
                                 <segments>
+                                    <segment title="3"/>
+                                    <segment title="4"/>
                                     <segment title="5"/>
                                     <segment title="6"/>
-                                    <segment title="7"/>
-                                    <segment title="8"/>
                                     <segment title="7"/>
                                 </segments>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
