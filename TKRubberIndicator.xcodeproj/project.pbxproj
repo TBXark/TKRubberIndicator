@@ -425,6 +425,7 @@
 				6A9103FC1D539B380009451B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

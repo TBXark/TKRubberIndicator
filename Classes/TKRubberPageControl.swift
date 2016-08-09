@@ -9,8 +9,6 @@
 import UIKit
 
 
-// ValueChange
-typealias UIControlValueChangeClosure = (Any) -> Void
 
 
 // MARK: - MoveDorection
@@ -52,7 +50,7 @@ public struct TKRubberPageControlConfig {
 public class TKRubberPageControl : UIControl {
     
     // 页数
-    var numberOfpage : Int  = 5{
+    public var numberOfpage : Int  = 5{
         didSet{
             if oldValue != numberOfpage{
                 resetRubberIndicator()
@@ -61,15 +59,15 @@ public class TKRubberPageControl : UIControl {
     }
     
     // 当前 Index
-    var currentIndex  = 0 {
+    public var currentIndex  = 0 {
         didSet {
             changIndexToValue(currentIndex)
         }
     }
     // 事件闭包
-    var valueChange  : UIControlValueChangeClosure?
+    public var valueChange  : ((Int) -> Void)?
     // 样式配置
-    var styleConfig  : TKRubberPageControlConfig {
+    public var styleConfig  : TKRubberPageControlConfig {
         didSet {
             resetRubberIndicator()
         }
@@ -175,7 +173,7 @@ public class TKRubberPageControl : UIControl {
     
     
      // 重置控件
-    func resetRubberIndicator(){
+    public func resetRubberIndicator(){
         changIndexToValue(0)
         smallBubbles.forEach {$0.removeFromSuperlayer()}
         smallBubbles.removeAll()
