@@ -1,64 +1,54 @@
-#  TKRubberIndicator
+# TKRubberIndicator
+> A rubber animation pagecontrol
 
-在 dribbble 上面看到一个很不错的 page control,然后就上 github 上面搜索了一下,发现有 html 版的,和安卓版的(但是我看不懂 java 啊),虽然有个小伙伴建立了一个 Swift 项目但是里面并没有什么东西,然后我就决定自己仿一个.
-
-下面这个是 dribbble 的效果图
-
-<img src="https://d13yacurqjgara.cloudfront.net/users/303234/screenshots/2090803/pageindicator.gif" width="400px" height="300px" />
-
-然后这个是实际效果图
-
-<img src="https://github.com/TBXark/TKRubberIndicator/blob/master/TKRubberIndicator/rubberindicator.gif" />
+[![Swift Version][swift-image]][swift-url]
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
+[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
+[![CocoaPods](http://img.shields.io/cocoapods/p/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Support](https://img.shields.io/badge/support-iOS%208%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)
 
 
+![](example.gif)
 
-* Designed by [Valentyn Khenkin](https://dribbble.com/shots/2090803-Rubber-Indicator?list=searches&tag=indicator&offset=7)
-* [Web 版](http://codepen.io/machycek/full/eNvyjb/)
-* [安卓版](https://github.com/LyndonChin/AndroidRubberIndicator)
+## Requirements
 
+- iOS 8.0+
+- Xcode 7.3
 
-ps: 安卓版有超过1000个Star和300多分 fork, 我赵天日不服啊,iOS 的小伙伴们,让我看到你们的双手,给我一个星星吧 
+## Installation
 
+#### CocoaPods
+You can use [CocoaPods](http://cocoapods.org/) to install `TKRubberPageControl` by adding it to your `Podfile`:
 
-
-## 使用 
-
-还没有研究怎么搞 Cocoapod, 所以大家只能下载下来把文件 复制到工程里面使用,我把所有的类放到一个文件里面了
-
-	git clone https://github.com/TBXark/TKRubberIndicator.git
-
-##  API
-
-#### 样式配置
-
-|Key | Usage|
-|---|---|
-|smallBubbleSize|小球尺寸|
-|mainBubbleSize|大球尺寸|
-|bubbleXOffsetSpace|小球间距|
-|bubbleYOffsetSpace|纵向间距|
-|animationDuration|动画时长|
-|backgroundColor|背景颜色|
-|smallBubbleColor|小球颜色|
-|mainBubbleColor|大球颜色|
-
-#### 初始化
-
-**纯代码**
-
-    init(frame: CGRect,count:Int,config:TKRubberIndicatorConfig = TKRubberIndicatorConfig())
-
-
-**XIB**
-
-	xib 的话,我平时很少用,使用 xib 只能用默认样式初始化,但是可以添加 runtime property 来改变 pageCount,如果想用 xib 又想自定义样式的话,要不就直接修改源代码,直接改变TKRubberIndicatorConfig的默认值 :)
-
-
-#### ValueChange事件
-这里提供 闭包和 传统的 Target-Action 两种方式
-
+```ruby
+platform :ios, '8.0'
+use_frameworks!
+pod 'TKRubberPageControl'
 ```
 
+To get the full benefits import `TKRubberPageControl` wherever you import UIKit
+
+``` swift
+import UIKit
+import TKRubberPageControl
+```
+#### Carthage
+Create a `Cartfile` that lists the framework and run `carthage update`. Follow the [instructions](https://github.com/Carthage/Carthage#if-youre-building-for-ios) to add `$(SRCROOT)/Carthage/Build/iOS/TKRubberPageControl.framework` to an iOS project.
+
+```
+github "tbxark/TKRubberPageControl"
+```
+#### Manually
+1. Download and drop ```TKRubberPageControl.swift``` in your project.  
+2. Congratulations!  
+
+## Usage example
+
+这里提供 闭包和 传统的 Target-Action 两种方式
+You can use closure or Target-Action to listen control event
+
+```
 class ViewController: UIViewController {
 
     let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
@@ -66,7 +56,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+
         self.view.backgroundColor = UIColor(red:0.553,  green:0.376,  blue:0.549, alpha:1)
         page.center = self.view.center
         page.valueChange = {(num) -> Void in
@@ -78,7 +68,7 @@ class ViewController: UIViewController {
         // 可以变化 page 的个数
         page.numberOfpage = 2
     }
-    
+
     @IBAction func pageCountChange(sender: UISegmentedControl) {
         page.numberOfpage = (sender.selectedSegmentIndex + 1) * 2
     }
@@ -93,20 +83,45 @@ class ViewController: UIViewController {
 
 ```
 
-## 注意
+### Base
 
-当页数为 0 或者 1 的时候, (-,,-)PageControl 是没有意义的,所以我会报一个断言错误
+|Key | Usage| |
+|---|---|---|
+|smallBubbleSize|未选中小球尺寸|unselect  small ball size|
+|mainBubbleSize|选中大球尺寸|select big ball size|
+|bubbleXOffsetSpace|小球间距|The distance between the ball|
+|bubbleYOffsetSpace|纵向间距|bubble Y Offset Space|
+|animationDuration|动画时长|animation duration|
+|backgroundColor|背景颜色|control background color|
+|smallBubbleColor|小球颜色|unselect small ball color|
+|mainBubbleColor|大球颜色|select big ball color|
 
 
-##  关于我
+## Release History
 
-* [weibo](http://weibo.com/tbxark)
-* [blog](http://tbxark.github.io)
+* 1.0.5
+  Fix bug, add Cocoapod and Carthage support
 
+* 1.0.4
+  Complete basic functions
 
-## 其他
-这里还有一个 动画的 Swift 做得 Switch 的集合大家也可以瞅瞅 [这里](https://github.com/TBXark/TKSwitcherCollection)
+## Contribute
 
-## 协议
+We would love for you to contribute to **TKRubberPageControl**, check the ``LICENSE`` file for more info.
 
-    MIT
+## Meta
+
+TBXark – [@vfanx](https://twitter.com/vfanx) – tbxark@outlook.com
+
+Distributed under the MIT license. See ``LICENSE`` for more information.
+
+[https://github.com/TBXark](https://github.com/TBXark)
+
+[swift-image]:https://img.shields.io/badge/swift-3.0-orange.svg
+[swift-url]: https://swift.org/
+[license-image]: https://img.shields.io/badge/License-MIT-blue.svg
+[license-url]: LICENSE
+[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
+[codebeat-image]: https://codebeat.co/badges/c19b47ea-2f9d-45df-8458-b2d952fe9dad
+[codebeat-url]: https://codebeat.co/projects/github-com-vsouza-awesomeios-com

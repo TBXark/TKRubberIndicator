@@ -9,27 +9,12 @@
 import UIKit
 
 
-// ValueChange
-typealias UIControlValueChangeClosure = (Any) -> Void
-
-// 快速获得 W 和 H
-extension UIView{
-    var w : CGFloat{
-        return self.bounds.width
-    }
-    var h : CGFloat{
-        return self.bounds.height
-    }
-}
-
-
-
 
 
 // MARK: - MoveDorection
 // 运动方向
 
-enum TKMoveDirection{
+private enum TKMoveDirection{
     case left
     case right
     func toBool() -> Bool{
@@ -42,39 +27,30 @@ enum TKMoveDirection{
     }
 }
 
+
 // MARK: - TKRubberPageControlConfig
 // 样式配置 (含默认配置)
 
-struct TKRubberPageControlConfig {
-    // 小球尺寸
-    var smallBubbleSize       : CGFloat        = 16
-    // 大球尺寸
-    var mainBubbleSize        : CGFloat        = 40
-    // 小球间距
-    var bubbleXOffsetSpace    : CGFloat        = 12
-    // 纵向间距
-    var bubbleYOffsetSpace    : CGFloat        = 8
-    // 动画时长
-    var animationDuration     : CFTimeInterval = 0.2
-    // 小球运动半径
-    var smallBubbleMoveRadius : CGFloat {return smallBubbleSize + bubbleXOffsetSpace}
-    
-    // 横条背景颜色
-    var backgroundColor  : UIColor = UIColor(red: 0.357, green: 0.196, blue: 0.337, alpha: 1)
-    // 小球颜色
-    var smallBubbleColor : UIColor = UIColor(red: 0.961, green: 0.561, blue: 0.518, alpha: 1)
-    // 大球颜色
-    var bigBubbleColor   : UIColor = UIColor(red: 0.788, green: 0.216, blue: 0.337, alpha: 1)
+public struct TKRubberPageControlConfig {
+    var smallBubbleSize: CGFloat = 16     // 小球尺寸
+    var mainBubbleSize: CGFloat = 40    // 大球尺寸
+    var bubbleXOffsetSpace: CGFloat = 12    // 小球间距
+    var bubbleYOffsetSpace: CGFloat = 8    // 纵向间距
+    var animationDuration: CFTimeInterval = 0.2    // 动画时长
+    var smallBubbleMoveRadius: CGFloat {return smallBubbleSize + bubbleXOffsetSpace}    // 小球运动半径
+    var backgroundColor: UIColor = UIColor(red: 0.357, green: 0.196, blue: 0.337, alpha: 1)    // 横条背景颜色
+    var smallBubbleColor: UIColor = UIColor(red: 0.961, green: 0.561, blue: 0.518, alpha: 1)    // 小球颜色
+    var bigBubbleColor: UIColor = UIColor(red: 0.788, green: 0.216, blue: 0.337, alpha: 1)    // 大球颜色
 }
 
 
 
 
 // MARK: PageControl
-class TKRubberPageControl : UIControl {
+public class TKRubberPageControl : UIControl {
     
     // 页数
-    var numberOfpage : Int  = 5{
+    public var numberOfpage : Int  = 5{
         didSet{
             if oldValue != numberOfpage{
                 resetRubberIndicator()
@@ -83,41 +59,46 @@ class TKRubberPageControl : UIControl {
     }
     
     // 当前 Index
-    var currentIndex  = 0
-    
+    public var currentIndex  = 0 {
+        didSet {
+            changIndexToValue(currentIndex)
+        }
+    }
     // 事件闭包
-    var valueChange  : UIControlValueChangeClosure?
+    public var valueChange  : ((Int) -> Void)?
     // 样式配置
-    var styleConfig  : TKRubberPageControlConfig!
+    public var styleConfig  : TKRubberPageControlConfig {
+        didSet {
+            resetRubberIndicator()
+        }
+    }
     
     //手势
-    var indexTap     : UITapGestureRecognizer!
-    
-    
+    private var indexTap     : UITapGestureRecognizer?
     // 所有图层
-    var smallBubbles    = Array<TKBubbleCell>()
-    var backgroundLayer = CAShapeLayer()
-    var mainBubble      = CAShapeLayer()
-    var backLineLayer   = CAShapeLayer()
+    private var smallBubbles    = [TKBubbleCell]()
+    private var backgroundLayer = CAShapeLayer()
+    private var mainBubble      = CAShapeLayer()
+    private var backLineLayer   = CAShapeLayer()
     
     // 大球缩放比例
-    let bubbleScale  : CGFloat  = 1/3.0
+    private let bubbleScale  : CGFloat  = 1/3.0
     
     // 存储计算用的
-    var xPointbegin  : CGFloat = 0
-    var xPointEnd    : CGFloat = 0
-    var yPointbegin  : CGFloat = 0
-    var yPointEnd    : CGFloat = 0
+    private var xPointbegin  : CGFloat = 0
+    private var xPointEnd    : CGFloat = 0
+    private var yPointbegin  : CGFloat = 0
+    private var yPointEnd    : CGFloat = 0
     
     
-    init(frame: CGRect, count: Int, config: TKRubberPageControlConfig = TKRubberPageControlConfig()) {
+    public init(frame: CGRect, count: Int, config: TKRubberPageControlConfig = TKRubberPageControlConfig()) {
         numberOfpage = count
         styleConfig = config
         super.init(frame: frame)
         self.setUpView()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         styleConfig = TKRubberPageControlConfig()
         super.init(coder: aDecoder)
         self.setUpView()
@@ -127,10 +108,13 @@ class TKRubberPageControl : UIControl {
         
         // 一些奇怪的位置计算
         
-        let y = (self.h - (styleConfig.smallBubbleSize + 2 * styleConfig.bubbleYOffsetSpace))/2
+        let y = (bounds.height - (styleConfig.smallBubbleSize + 2 * styleConfig.bubbleYOffsetSpace))/2
         let w = CGFloat(numberOfpage - 2) * styleConfig.smallBubbleSize + styleConfig.mainBubbleSize + CGFloat(numberOfpage) * styleConfig.bubbleXOffsetSpace
         let h = styleConfig.smallBubbleSize + styleConfig.bubbleYOffsetSpace * 2
-        let x = (self.w - w)/2
+        let x = (bounds.width - w)/2
+        if w > bounds.width || h > bounds.height {
+            print("Draw UI control out off rect")
+        }
         
         xPointbegin  = x
         xPointEnd    = x + w
@@ -180,24 +164,26 @@ class TKRubberPageControl : UIControl {
         }
         
         // 增加点击手势
-        indexTap = UITapGestureRecognizer(target: self, action: #selector(TKRubberPageControl.tapValueChange(_: )))
-        self.addGestureRecognizer(indexTap)
+        if indexTap == nil {
+            let tap = UITapGestureRecognizer(target: self, action: #selector(TKRubberPageControl.tapValueChange(_: )))
+            addGestureRecognizer(tap)
+            indexTap = tap
+        }
     }
     
     
      // 重置控件
-    func resetRubberIndicator(){
+    public func resetRubberIndicator(){
         changIndexToValue(0)
         smallBubbles.forEach {$0.removeFromSuperlayer()}
         smallBubbles.removeAll()
-        removeGestureRecognizer(indexTap)
         setUpView()
     }
     
     
     
     // 手势事件
-    func tapValueChange(ges: UITapGestureRecognizer){
+    @objc private func tapValueChange(ges: UITapGestureRecognizer){
         let point = ges.locationInView(self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
             let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
@@ -206,8 +192,8 @@ class TKRubberPageControl : UIControl {
     }
     
     // Index值变化
-    func changIndexToValue(valueindex: Int){
-        var index = valueindex
+    private func changIndexToValue(valueIndex: Int){
+        var index = valueIndex
         if index >= numberOfpage{index = numberOfpage - 1}
         if index < 0{index = 0}
         if index == currentIndex {return}
@@ -265,14 +251,12 @@ class TKRubberPageControl : UIControl {
 
 
 // MARK: - Small Bubble
-class TKBubbleCell: CAShapeLayer {
+private class TKBubbleCell: CAShapeLayer {
     
-    
-    var bubbleLayer = CAShapeLayer()
-    let bubbleScale   : CGFloat  = 0.5
-    var lastDirection : TKMoveDirection!
-    var styleConfig   : TKRubberPageControlConfig!
-    
+    private var bubbleLayer = CAShapeLayer()
+    private let bubbleScale   : CGFloat  = 0.5
+    private var lastDirection : TKMoveDirection!
+    private var styleConfig   : TKRubberPageControlConfig
     
     init(style: TKRubberPageControlConfig) {
         styleConfig = style
@@ -280,11 +264,9 @@ class TKBubbleCell: CAShapeLayer {
         setupLayer()
     }
     
-    override init(layer: AnyObject) {
-        super.init(layer: layer)
-    }
     
     required init?(coder aDecoder: NSCoder) {
+        styleConfig = TKRubberPageControlConfig()
         super.init(coder: aDecoder)
         setupLayer()
     }
@@ -355,7 +337,6 @@ class TKBubbleCell: CAShapeLayer {
         self.bubbleLayer.addAnimation(bubbleShakeAnim, forKey: "Shake")
         
     }
-    
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         if let animate = anim as? CAKeyframeAnimation{
