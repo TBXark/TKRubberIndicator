@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "TKRubberPageControl"
-  s.version      = "1.0.6"
+  s.version      = "1.0.7"
   s.summary      = "A rubber pagec ontrol in Swift."
   s.license      = { :type => 'MIT License', :file => 'LICENSE' } # 协议
   s.homepage     = "https://github.com/TBXark/TKRubberIndicator"
