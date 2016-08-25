@@ -48,7 +48,7 @@ github "tbxark/TKRubberPageControl"
 这里提供 闭包和 传统的 Target-Action 两种方式
 You can use closure or Target-Action to listen control event
 
-```
+```swift
 class ViewController: UIViewController {
 
     let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
