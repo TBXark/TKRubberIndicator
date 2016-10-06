@@ -13,6 +13,7 @@
 
 ## Requirements
 
+- Swift 3.0
 - iOS 8.0+
 - Xcode 7.3
 
@@ -98,6 +99,9 @@ class ViewController: UIViewController {
 
 
 ## Release History
+
+* 1.3.0
+  Support Swift 3.0
 
 * 1.0.5
   Fix bug, add Cocoapod and Carthage support

@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let page = TKRubberPageControl(frame: CGRectMake(100, 100, 200, 100), count: 3)
+    let page = TKRubberPageControl(frame: CGRect(x: 100, y: 100, width: 200, height: 100), count: 3)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,17 +21,17 @@ class ViewController: UIViewController {
         page.valueChange = {(num) -> Void in
             print("Closure : Page is \(num)")
         }
-        page.addTarget(self, action: #selector(ViewController.targetActionValueChange(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        page.addTarget(self, action: #selector(ViewController.targetActionValueChange(_:)), for: UIControlEvents.valueChanged)
         self.view.addSubview(page)
 
 
         page.numberOfpage = 3
     }
     
-    @IBAction func pageCountChange(sender: UISegmentedControl) {
+    @IBAction func pageCountChange(_ sender: UISegmentedControl) {
         page.numberOfpage = sender.selectedSegmentIndex + 3
     }
-    func targetActionValueChange(page:TKRubberPageControl){
+    func targetActionValueChange(_ page:TKRubberPageControl){
         print("Target-Action : Page is \(page.currentIndex)")
     }
 

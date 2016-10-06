@@ -47,10 +47,10 @@ public struct TKRubberPageControlConfig {
 
 
 // MARK: PageControl
-public class TKRubberPageControl : UIControl {
+open class TKRubberPageControl : UIControl {
     
     // 页数
-    public var numberOfpage : Int  = 5{
+    open var numberOfpage : Int  = 5{
         didSet{
             if oldValue != numberOfpage{
                 resetRubberIndicator()
@@ -59,36 +59,36 @@ public class TKRubberPageControl : UIControl {
     }
     
     // 当前 Index
-    public var currentIndex  = 0 {
+    open var currentIndex  = 0 {
         didSet {
             changIndexToValue(currentIndex)
         }
     }
     // 事件闭包
-    public var valueChange  : ((Int) -> Void)?
+    open var valueChange  : ((Int) -> Void)?
     // 样式配置
-    public var styleConfig  : TKRubberPageControlConfig {
+    open var styleConfig  : TKRubberPageControlConfig {
         didSet {
             resetRubberIndicator()
         }
     }
     
     //手势
-    private var indexTap     : UITapGestureRecognizer?
+    fileprivate var indexTap     : UITapGestureRecognizer?
     // 所有图层
-    private var smallBubbles    = [TKBubbleCell]()
-    private var backgroundLayer = CAShapeLayer()
-    private var mainBubble      = CAShapeLayer()
-    private var backLineLayer   = CAShapeLayer()
+    fileprivate var smallBubbles    = [TKBubbleCell]()
+    fileprivate var backgroundLayer = CAShapeLayer()
+    fileprivate var mainBubble      = CAShapeLayer()
+    fileprivate var backLineLayer   = CAShapeLayer()
     
     // 大球缩放比例
-    private let bubbleScale  : CGFloat  = 1/3.0
+    fileprivate let bubbleScale  : CGFloat  = 1/3.0
     
     // 存储计算用的
-    private var xPointbegin  : CGFloat = 0
-    private var xPointEnd    : CGFloat = 0
-    private var yPointbegin  : CGFloat = 0
-    private var yPointEnd    : CGFloat = 0
+    fileprivate var xPointbegin  : CGFloat = 0
+    fileprivate var xPointEnd    : CGFloat = 0
+    fileprivate var yPointbegin  : CGFloat = 0
+    fileprivate var yPointEnd    : CGFloat = 0
     
     
     public init(frame: CGRect, count: Int, config: TKRubberPageControlConfig = TKRubberPageControlConfig()) {
@@ -104,7 +104,7 @@ public class TKRubberPageControl : UIControl {
         self.setUpView()
     }
     
-    private func setUpView(){
+    fileprivate func setUpView(){
         
         // 一些奇怪的位置计算
         
@@ -121,20 +121,20 @@ public class TKRubberPageControl : UIControl {
         yPointbegin  = y
         yPointEnd    = y + h
         
-        let lineFrame = CGRectMake(x, y, w, h)
-        let frame     = CGRectMake(x, y - (styleConfig.mainBubbleSize - h)/2, styleConfig.mainBubbleSize, styleConfig.mainBubbleSize)
-        var layerFrame = CGRectInset(frame, styleConfig.bubbleYOffsetSpace , styleConfig.bubbleYOffsetSpace)
+        let lineFrame = CGRect(x: x, y: y, width: w, height: h)
+        let frame     = CGRect(x: x, y: y - (styleConfig.mainBubbleSize - h)/2, width: styleConfig.mainBubbleSize, height: styleConfig.mainBubbleSize)
+        var layerFrame = frame.insetBy(dx: styleConfig.bubbleYOffsetSpace , dy: styleConfig.bubbleYOffsetSpace)
         
         
         // 背景的横线
-        backLineLayer.path      = UIBezierPath(roundedRect: lineFrame, cornerRadius: h/2).CGPath
-        backLineLayer.fillColor = styleConfig.backgroundColor.CGColor
+        backLineLayer.path      = UIBezierPath(roundedRect: lineFrame, cornerRadius: h/2).cgPath
+        backLineLayer.fillColor = styleConfig.backgroundColor.cgColor
         self.layer.addSublayer(backLineLayer)
         
         
         // 大球背景的圈
-        backgroundLayer.path      = UIBezierPath(ovalInRect: frame).CGPath
-        backgroundLayer.fillColor = styleConfig.backgroundColor.CGColor
+        backgroundLayer.path      = UIBezierPath(ovalIn: frame).cgPath
+        backgroundLayer.fillColor = styleConfig.backgroundColor.cgColor
         backgroundLayer.zPosition = -1
         self.layer.addSublayer(backgroundLayer)
         
@@ -142,9 +142,9 @@ public class TKRubberPageControl : UIControl {
         
         // 大球
         let origin           = layerFrame.origin
-        layerFrame.origin    = CGPointZero
-        mainBubble.path      = UIBezierPath(ovalInRect: layerFrame).CGPath
-        mainBubble.fillColor = styleConfig.bigBubbleColor.CGColor
+        layerFrame.origin    = CGPoint.zero
+        mainBubble.path      = UIBezierPath(ovalIn: layerFrame).cgPath
+        mainBubble.fillColor = styleConfig.bigBubbleColor.cgColor
         layerFrame.origin    = origin
         mainBubble.frame     = layerFrame
         mainBubble.zPosition = 100
@@ -153,7 +153,7 @@ public class TKRubberPageControl : UIControl {
         
         // 生成小球
         let bubbleOffset = styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace
-        var bubbleFrame  = CGRectMake(x + styleConfig.bubbleXOffsetSpace + bubbleOffset , y + styleConfig.bubbleYOffsetSpace, styleConfig.smallBubbleSize, styleConfig.smallBubbleSize)
+        var bubbleFrame  = CGRect(x: x + styleConfig.bubbleXOffsetSpace + bubbleOffset , y: y + styleConfig.bubbleYOffsetSpace, width: styleConfig.smallBubbleSize, height: styleConfig.smallBubbleSize)
         for _ in 0..<(numberOfpage-1){
             let smallBubble       = TKBubbleCell(style: styleConfig)
             smallBubble.frame     = bubbleFrame
@@ -173,7 +173,7 @@ public class TKRubberPageControl : UIControl {
     
     
      // 重置控件
-    public func resetRubberIndicator(){
+    open func resetRubberIndicator(){
         changIndexToValue(0)
         smallBubbles.forEach {$0.removeFromSuperlayer()}
         smallBubbles.removeAll()
@@ -183,8 +183,8 @@ public class TKRubberPageControl : UIControl {
     
     
     // 手势事件
-    @objc private func tapValueChange(ges: UITapGestureRecognizer){
-        let point = ges.locationInView(self)
+    @objc fileprivate func tapValueChange(_ ges: UITapGestureRecognizer){
+        let point = ges.location(in: self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
             let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
             changIndexToValue(index)
@@ -192,14 +192,14 @@ public class TKRubberPageControl : UIControl {
     }
     
     // Index值变化
-    private func changIndexToValue(valueIndex: Int){
+    fileprivate func changIndexToValue(_ valueIndex: Int){
         var index = valueIndex
         if index >= numberOfpage{index = numberOfpage - 1}
         if index < 0{index = 0}
         if index == currentIndex {return}
         
         let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
-        let point     = CGPointMake(xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2, yPointbegin - styleConfig.bubbleYOffsetSpace/2)
+        let point     = CGPoint(x: xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2, y: yPointbegin - styleConfig.bubbleYOffsetSpace/2)
         let range     = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
         
         for index in range{
@@ -211,20 +211,20 @@ public class TKRubberPageControl : UIControl {
         mainBubblePositionChange(direction, position: point, duration: styleConfig.animationDuration)
         
         // 可以使用 Target-Action 监听事件
-        sendActionsForControlEvents(UIControlEvents.ValueChanged)
+        sendActions(for: UIControlEvents.valueChanged)
         // 也可以使用 闭包 监听事件
         valueChange?(currentIndex)
         
     }
     
     // 大球动画
-    private func mainBubblePositionChange(direction: TKMoveDirection, position: CGPoint, duration: Double){
+    fileprivate func mainBubblePositionChange(_ direction: TKMoveDirection, position: CGPoint, duration: Double){
         var point = position
         // 大球缩放动画
         let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
-        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity), 
-            NSValue(CATransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)), 
-            NSValue(CATransform3D: CATransform3DIdentity)]
+        bubbleTransformAnim.values   = [NSValue(caTransform3D: CATransform3DIdentity), 
+            NSValue(caTransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)), 
+            NSValue(caTransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
         
@@ -240,7 +240,7 @@ public class TKRubberPageControl : UIControl {
         backgroundLayer.position = point
         CATransaction.commit()
         
-        mainBubble.addAnimation(bubbleTransformAnim, forKey: "Scale")
+        mainBubble.add(bubbleTransformAnim, forKey: "Scale")
     }
 }
 
@@ -251,12 +251,19 @@ public class TKRubberPageControl : UIControl {
 
 
 // MARK: - Small Bubble
-private class TKBubbleCell: CAShapeLayer {
+private class TKBubbleCell: CAShapeLayer, CAAnimationDelegate {
     
-    private var bubbleLayer = CAShapeLayer()
-    private let bubbleScale   : CGFloat  = 0.5
-    private var lastDirection : TKMoveDirection!
-    private var styleConfig   : TKRubberPageControlConfig
+    fileprivate var bubbleLayer = CAShapeLayer()
+    fileprivate let bubbleScale   : CGFloat  = 0.5
+    fileprivate var lastDirection : TKMoveDirection!
+    fileprivate var styleConfig   : TKRubberPageControlConfig
+    fileprivate var cachePosition = CGPoint.zero
+    
+    override init(layer: Any) {
+        styleConfig = TKRubberPageControlConfig()
+        super.init(layer: layer)
+        setupLayer()
+    }
     
     init(style: TKRubberPageControlConfig) {
         styleConfig = style
@@ -271,83 +278,84 @@ private class TKBubbleCell: CAShapeLayer {
         setupLayer()
     }
     
-    private func setupLayer(){
-        self.frame = CGRectMake(0, 0, styleConfig.smallBubbleSize, styleConfig.smallBubbleSize)
+    fileprivate func setupLayer(){
+        self.frame = CGRect(x: 0, y: 0, width: styleConfig.smallBubbleSize, height: styleConfig.smallBubbleSize)
         
-        bubbleLayer.path        = UIBezierPath(ovalInRect: self.bounds).CGPath
-        bubbleLayer.fillColor   = styleConfig.smallBubbleColor.CGColor
-        bubbleLayer.strokeColor = styleConfig.backgroundColor.CGColor
+        bubbleLayer.path        = UIBezierPath(ovalIn: self.bounds).cgPath
+        bubbleLayer.fillColor   = styleConfig.smallBubbleColor.cgColor
+        bubbleLayer.strokeColor = styleConfig.backgroundColor.cgColor
         bubbleLayer.lineWidth   = styleConfig.bubbleXOffsetSpace / 8
         
         self.addSublayer(bubbleLayer)
     }
     
     // beginTime 本来是留给小球轮播用的, 但是效果不好就没用了
-    func positionChange(direction: TKMoveDirection, radius: CGFloat, duration: CFTimeInterval, beginTime: CFTimeInterval){
+    func positionChange(_ direction: TKMoveDirection, radius: CGFloat, duration: CFTimeInterval, beginTime: CFTimeInterval){
         
         let toLeft = direction.toBool()
         let movePath = UIBezierPath()
-        var center = CGPointZero
+        var center = CGPoint.zero
         let startAngle = toLeft ? 0 : CGFloat(M_PI)
         let endAngle   = toLeft ? CGFloat(M_PI) : 0
         center.x += radius * (toLeft ? -1 : 1)
         lastDirection = direction
         
-        movePath.addArcWithCenter(center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: toLeft)
+        movePath.addArc(withCenter: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: toLeft)
         
         // 小球整体沿着圆弧运动, 但是当圆弧运动动画合形变动画叠加在一起的时候, 就没有了向心作用, 所以就把形变动画放在子 Layer 里面
         let positionAnimation = CAKeyframeAnimation(keyPath: "position")
         positionAnimation.duration = duration
         positionAnimation.beginTime = beginTime
-        positionAnimation.additive = true;
+        positionAnimation.isAdditive = true;
         positionAnimation.calculationMode = kCAAnimationPaced;
         positionAnimation.rotationMode = kCAAnimationRotateAuto;
-        positionAnimation.path = movePath.CGPath
+        positionAnimation.path = movePath.cgPath
         positionAnimation.fillMode = kCAFillModeForwards
-        positionAnimation.removedOnCompletion = true
+        positionAnimation.isRemovedOnCompletion = false
         positionAnimation.delegate = self
-        
+        cachePosition = self.position
         
         // 小球变形动画, 小球变形实际上只是 Y 轴上的 Scale
         let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
-        bubbleTransformAnim.values   = [NSValue(CATransform3D: CATransform3DIdentity), 
-            NSValue(CATransform3D: CATransform3DMakeScale(1, bubbleScale, 1)), 
-            NSValue(CATransform3D: CATransform3DIdentity)]
+        bubbleTransformAnim.values   = [NSValue(caTransform3D: CATransform3DIdentity), 
+            NSValue(caTransform3D: CATransform3DMakeScale(1, bubbleScale, 1)), 
+            NSValue(caTransform3D: CATransform3DIdentity)]
         bubbleTransformAnim.keyTimes = [0, 0.5, 1]
         bubbleTransformAnim.duration = duration
-        
         bubbleTransformAnim.beginTime = beginTime
+
+
+        bubbleLayer.add(bubbleTransformAnim, forKey: "Scale")
+        self.add(positionAnimation, forKey: "Position")
         
-        bubbleLayer.addAnimation(bubbleTransformAnim, forKey: "Scale")
-        self.addAnimation(positionAnimation, forKey: "Position")
         
         
-        
-        // 最后让小球鬼畜的抖动一下
+//        // 最后让小球鬼畜的抖动一下
         let bubbleShakeAnim = CAKeyframeAnimation(keyPath: "position")
-        bubbleShakeAnim.beginTime = beginTime + duration;
-        bubbleShakeAnim.duration = 0.01
-        bubbleShakeAnim.values = [NSValue(CGPoint: CGPointMake(0, 0)), 
-            NSValue(CGPoint: CGPointMake(0, 4)), 
-            NSValue(CGPoint: CGPointMake(0, 0)), 
-            NSValue(CGPoint: CGPointMake(0, -4)), 
-            NSValue(CGPoint: CGPointMake(0, 0)), ]
-        bubbleShakeAnim.repeatCount = 10
+        bubbleShakeAnim.beginTime = beginTime + duration + 0.05;
+        bubbleShakeAnim.duration = 0.02
+        bubbleShakeAnim.values = [NSValue(cgPoint: CGPoint(x: 0, y: 0)),
+                                  NSValue(cgPoint: CGPoint(x: 0, y: 3)),
+                                  NSValue(cgPoint: CGPoint(x: 0, y: -3)),
+                                  NSValue(cgPoint: CGPoint(x: 0, y: 0)), ]
+        bubbleShakeAnim.repeatCount = 6
         bubbleShakeAnim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        self.bubbleLayer.addAnimation(bubbleShakeAnim, forKey: "Shake")
-        
+        self.bubbleLayer.add(bubbleShakeAnim, forKey: "Shake")
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if let animate = anim as? CAKeyframeAnimation{
             if animate.keyPath == "position"{
+                removeAnimation(forKey: "Position")
                 CATransaction.begin()
                 // 改变小球实际的位置
+                CATransaction.setAnimationDuration(0) 
                 CATransaction.setDisableActions(true)
-                self.opacity = 0
-                var point = self.position
+//                self.opacity = 0
+                var point = self.cachePosition
                 point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
-                print(point)
+//                print(point)
                 self.position = point
                 self.opacity = 1
                 CATransaction.commit()

@@ -163,6 +163,8 @@
 				TargetAttributes = {
 					6A555EC51BDE277B00FC36E6 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 858CBVXSWP;
+						LastSwiftMigration = 0800;
 					};
 					6A9103F51D539B370009451B = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -335,10 +337,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 858CBVXSWP;
 				INFOPLIST_FILE = TKRubberIndicator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.TBXark.TKRubberIndicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -346,10 +350,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 858CBVXSWP;
 				INFOPLIST_FILE = TKRubberIndicator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.TBXark.TKRubberIndicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
