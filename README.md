@@ -15,7 +15,7 @@
 
 - Swift 3.0
 - iOS 8.0+
-- Xcode 7.3
+- Xcode 8.0
 
 ## Installation
 
