@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TKRubberPageControl
 
 class ViewController: UIViewController {
 
@@ -16,13 +17,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         
-        self.view.backgroundColor = UIColor(red:0.553,  green:0.376,  blue:0.549, alpha:1)
-        page.center = self.view.center
+        view.backgroundColor = UIColor.white
+        page.center = view.center
         page.valueChange = {(num) -> Void in
             print("Closure : Page is \(num)")
         }
         page.addTarget(self, action: #selector(ViewController.targetActionValueChange(_:)), for: UIControlEvents.valueChanged)
-        self.view.addSubview(page)
+        view.addSubview(page)
 
 
         page.numberOfpage = 3

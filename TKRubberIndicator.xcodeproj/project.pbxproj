@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A3D16FA1BE9B0CA0018C0C4 /* TKRubberPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3D16F91BE9B0CA0018C0C4 /* TKRubberPageControl.swift */; };
 		6A42F80D1BE06B5100251FFA /* rubberindicator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6A42F80C1BE06B5100251FFA /* rubberindicator.gif */; };
 		6A555ECA1BDE277B00FC36E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A555EC91BDE277B00FC36E6 /* AppDelegate.swift */; };
 		6A555ECC1BDE277B00FC36E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A555ECB1BDE277B00FC36E6 /* ViewController.swift */; };
@@ -15,11 +14,36 @@
 		6A555ED11BDE277B00FC36E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A555ED01BDE277B00FC36E6 /* Assets.xcassets */; };
 		6A555ED41BDE277B00FC36E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A555ED21BDE277B00FC36E6 /* LaunchScreen.storyboard */; };
 		6A9103F91D539B380009451B /* TKRubberPageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A9103F81D539B380009451B /* TKRubberPageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6A9103FE1D539B470009451B /* TKRubberPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3D16F91BE9B0CA0018C0C4 /* TKRubberPageControl.swift */; };
+		6AFF4D631E41DD5500CD6B9E /* TKRubberPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFF4D621E41DD5500CD6B9E /* TKRubberPageControl.swift */; };
+		6AFF4D641E41DD5D00CD6B9E /* TKRubberPageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9103F61D539B370009451B /* TKRubberPageControl.framework */; };
+		6AFF4D651E41DD5D00CD6B9E /* TKRubberPageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9103F61D539B370009451B /* TKRubberPageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		6AFF4D661E41DD5D00CD6B9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6A555EBE1BDE277B00FC36E6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6A9103F51D539B370009451B;
+			remoteInfo = TKRubberPageControl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6AFF4D681E41DD5D00CD6B9E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6AFF4D651E41DD5D00CD6B9E /* TKRubberPageControl.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		6A3D16F91BE9B0CA0018C0C4 /* TKRubberPageControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TKRubberPageControl.swift; sourceTree = "<group>"; };
 		6A42F80C1BE06B5100251FFA /* rubberindicator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = rubberindicator.gif; sourceTree = "<group>"; };
 		6A555EC61BDE277B00FC36E6 /* TKRubberIndicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TKRubberIndicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A555EC91BDE277B00FC36E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -31,6 +55,7 @@
 		6A9103F61D539B370009451B /* TKRubberPageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TKRubberPageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A9103F81D539B380009451B /* TKRubberPageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TKRubberPageControl.h; sourceTree = "<group>"; };
 		6A9103FA1D539B380009451B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6AFF4D621E41DD5500CD6B9E /* TKRubberPageControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TKRubberPageControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AFF4D641E41DD5D00CD6B9E /* TKRubberPageControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,18 +77,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6A3D16F81BE9B0CA0018C0C4 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				6A3D16F91BE9B0CA0018C0C4 /* TKRubberPageControl.swift */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		6A555EBD1BDE277B00FC36E6 = {
 			isa = PBXGroup;
 			children = (
-				6A3D16F81BE9B0CA0018C0C4 /* Classes */,
 				6A555EC81BDE277B00FC36E6 /* TKRubberIndicator */,
 				6A9103F71D539B380009451B /* TKRubberPageControl */,
 				6A555EC71BDE277B00FC36E6 /* Products */,
@@ -95,6 +112,7 @@
 		6A9103F71D539B380009451B /* TKRubberPageControl */ = {
 			isa = PBXGroup;
 			children = (
+				6AFF4D621E41DD5500CD6B9E /* TKRubberPageControl.swift */,
 				6A9103F81D539B380009451B /* TKRubberPageControl.h */,
 				6A9103FA1D539B380009451B /* Info.plist */,
 			);
@@ -122,10 +140,12 @@
 				6A555EC21BDE277B00FC36E6 /* Sources */,
 				6A555EC31BDE277B00FC36E6 /* Frameworks */,
 				6A555EC41BDE277B00FC36E6 /* Resources */,
+				6AFF4D681E41DD5D00CD6B9E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6AFF4D671E41DD5D00CD6B9E /* PBXTargetDependency */,
 			);
 			name = TKRubberIndicator;
 			productName = TKRubberIndicator;
@@ -168,6 +188,8 @@
 					};
 					6A9103F51D539B370009451B = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 858CBVXSWP;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -217,7 +239,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A555ECC1BDE277B00FC36E6 /* ViewController.swift in Sources */,
-				6A3D16FA1BE9B0CA0018C0C4 /* TKRubberPageControl.swift in Sources */,
 				6A555ECA1BDE277B00FC36E6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -226,11 +247,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A9103FE1D539B470009451B /* TKRubberPageControl.swift in Sources */,
+				6AFF4D631E41DD5500CD6B9E /* TKRubberPageControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6AFF4D671E41DD5D00CD6B9E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6A9103F51D539B370009451B /* TKRubberPageControl */;
+			targetProxy = 6AFF4D661E41DD5D00CD6B9E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		6A555ECD1BDE277B00FC36E6 /* Main.storyboard */ = {
@@ -336,6 +365,7 @@
 		6A555ED91BDE277B00FC36E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 858CBVXSWP;
 				INFOPLIST_FILE = TKRubberIndicator/Info.plist;
@@ -349,6 +379,7 @@
 		6A555EDA1BDE277B00FC36E6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 858CBVXSWP;
 				INFOPLIST_FILE = TKRubberIndicator/Info.plist;
@@ -363,18 +394,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 858CBVXSWP;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = TKRubberPageControl/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = TBXark.TKRubberPageControl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TBXark.TKRubberPageControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -385,18 +420,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 858CBVXSWP;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = TKRubberPageControl/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = TBXark.TKRubberPageControl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TBXark.TKRubberPageControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
