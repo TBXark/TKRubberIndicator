@@ -100,6 +100,9 @@ class ViewController: UIViewController {
 
 ## Release History
 
+* 1.3.1
+  Bug Fixed
+
 * 1.3.0
   Support Swift 3.0
 
