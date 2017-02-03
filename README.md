@@ -46,7 +46,6 @@ github "tbxark/TKRubberPageControl"
 
 ## Usage example
 
-这里提供 闭包和 传统的 Target-Action 两种方式
 You can use closure or Target-Action to listen control event
 
 ```
@@ -66,7 +65,6 @@ class ViewController: UIViewController {
         page.addTarget(self, action: "targetActionValueChange:", forControlEvents: UIControlEvents.ValueChanged)
         self.view.addSubview(page)
 
-        // 可以变化 page 的个数
         page.numberOfpage = 2
     }
 
