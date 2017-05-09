@@ -2,10 +2,9 @@
 > A rubber animation pagecontrol
 
 [![Swift Version][swift-image]][swift-url]
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
-[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
-[![CocoaPods](http://img.shields.io/cocoapods/p/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![License MIT][license-image]][license-url]
+[![CocoaPods][cocoapods-image]][cocoapods-url]
+[![Carthage compatible][carthage-image]][carthage-url]
 [![Support](https://img.shields.io/badge/support-iOS%208%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)
 
 
@@ -48,7 +47,7 @@ github "tbxark/TKRubberPageControl"
 
 You can use closure or Target-Action to listen control event
 
-```
+```swift
 class ViewController: UIViewController {
 
     let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
@@ -126,7 +125,9 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 [swift-url]: https://swift.org/
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg
 [license-url]: LICENSE
+[cocoapods-image]: http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat
+[cocoapods-url]: http://cocoapods.org/?q=TKRubberPageControl
 [travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[codebeat-image]: https://codebeat.co/badges/c19b47ea-2f9d-45df-8458-b2d952fe9dad
-[codebeat-url]: https://codebeat.co/projects/github-com-vsouza-awesomeios-com
+[carthage-url]:https://github.com/Carthage/Carthage
+[carthage-image]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
