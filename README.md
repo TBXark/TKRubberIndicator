@@ -3,8 +3,8 @@
 
 [![Swift Version][swift-image]][swift-url]
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
-[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
-[![CocoaPods](http://img.shields.io/cocoapods/p/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q= TKRubberPageControl)
+[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q=TKRubberPageControl)
+[![CocoaPods](http://img.shields.io/cocoapods/p/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q=TKRubberPageControl)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Support](https://img.shields.io/badge/support-iOS%208%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)
 
@@ -13,9 +13,9 @@
 
 ## Requirements
 
-- Swift 3.0
+- Swift 4.0
 - iOS 8.0+
-- Xcode 8.0
+- Xcode 9.0
 
 ## Installation
 
@@ -38,7 +38,7 @@ import TKRubberPageControl
 Create a `Cartfile` that lists the framework and run `carthage update`. Follow the [instructions](https://github.com/Carthage/Carthage#if-youre-building-for-ios) to add `$(SRCROOT)/Carthage/Build/iOS/TKRubberPageControl.framework` to an iOS project.
 
 ```
-github "tbxark/TKRubberPageControl"
+github "tbxark/TKRubberIndicator"
 ```
 #### Manually
 1. Download and drop ```TKRubberPageControl.swift``` in your project.  
@@ -97,6 +97,9 @@ class ViewController: UIViewController {
 
 
 ## Release History
+
+* 1.4.0
+  Swift 4.0
 
 * 1.3.1
   Bug Fixed

@@ -14,7 +14,7 @@ import UIKit
 private enum TKMoveDirection{
     case left
     case right
-    func toBool() -> Bool{
+    func toLeft() -> Bool{
         switch self{
         case .left: 
             return true
@@ -88,21 +88,21 @@ open class TKRubberPageControl : UIControl {
     }
     
     // 手势
-    fileprivate var indexTap     : UITapGestureRecognizer?
+    private var indexTap     : UITapGestureRecognizer?
     // 所有图层
-    fileprivate var smallBubbles    = [TKBubbleCell]()
-    fileprivate var backgroundLayer = CAShapeLayer()
-    fileprivate var mainBubble      = CAShapeLayer()
-    fileprivate var backLineLayer   = CAShapeLayer()
+    private var smallBubbles    = [TKBubbleCell]()
+    private var backgroundLayer = CAShapeLayer()
+    private var mainBubble      = CAShapeLayer()
+    private var backLineLayer   = CAShapeLayer()
     
     // 大球缩放比例
-    fileprivate let bubbleScale  : CGFloat  = 1/3.0
+    private let bubbleScale  : CGFloat  = 1/3.0
     
     // 存储计算用的
-    fileprivate var xPointbegin  : CGFloat = 0
-    fileprivate var xPointEnd    : CGFloat = 0
-    fileprivate var yPointbegin  : CGFloat = 0
-    fileprivate var yPointEnd    : CGFloat = 0
+    private var xPointbegin  : CGFloat = 0
+    private var xPointEnd    : CGFloat = 0
+    private var yPointbegin  : CGFloat = 0
+    private var yPointEnd    : CGFloat = 0
     
     
     public init(frame: CGRect, count: Int, config: TKRubberPageControlConfig = TKRubberPageControlConfig()) {
@@ -118,7 +118,7 @@ open class TKRubberPageControl : UIControl {
         setUpView()
     }
     
-    fileprivate func setUpView(){
+    private func setUpView(){
         
         // 一些奇怪的位置计算
         
@@ -202,7 +202,7 @@ open class TKRubberPageControl : UIControl {
     
     
     // 手势事件
-    @objc fileprivate func tapValueChange(_ ges: UITapGestureRecognizer){
+    @objc private func tapValueChange(_ ges: UITapGestureRecognizer){
         let point = ges.location(in: self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd{
             let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
@@ -211,7 +211,7 @@ open class TKRubberPageControl : UIControl {
     }
     
     // Index值变化
-    fileprivate func changIndexToValue(_ valueIndex: Int){
+    private func changIndexToValue(_ valueIndex: Int){
         var index = valueIndex
         if index >= numberOfpage { index = numberOfpage - 1 }
         if index < 0 { index = 0 }
@@ -222,7 +222,7 @@ open class TKRubberPageControl : UIControl {
         
         // 小球动画
         for index in range{
-            let smallBubbleIndex = (direction.toBool()) ? (index - 1) : (index)
+            let smallBubbleIndex = (direction.toLeft()) ? (index - 1) : (index)
             let smallBubble      = smallBubbles[smallBubbleIndex]
             smallBubble.positionChange(direction,
                                        radius: styleConfig.smallBubbleMoveRadius / 2,
@@ -268,11 +268,11 @@ open class TKRubberPageControl : UIControl {
 // MARK: - Small Bubble
 private class TKBubbleCell: CAShapeLayer, CAAnimationDelegate {
     
-    fileprivate var bubbleLayer = CAShapeLayer()
-    fileprivate let bubbleScale   : CGFloat  = 0.5
-    fileprivate var lastDirection : TKMoveDirection!
-    fileprivate var styleConfig   : TKRubberPageControlConfig
-    fileprivate var cachePosition = CGPoint.zero
+    var bubbleLayer = CAShapeLayer()
+    let bubbleScale   : CGFloat  = 0.5
+    var lastDirection : TKMoveDirection!
+    var styleConfig   : TKRubberPageControlConfig
+    var cachePosition = CGPoint.zero
     
     override init(layer: Any) {
         styleConfig = TKRubberPageControlConfig()
@@ -293,7 +293,7 @@ private class TKBubbleCell: CAShapeLayer, CAAnimationDelegate {
         setupLayer()
     }
     
-    fileprivate func setupLayer(){
+    private func setupLayer(){
         frame = CGRect(x: 0, y: 0, width: styleConfig.smallBubbleSize, height: styleConfig.smallBubbleSize)
         
         bubbleLayer.path        = UIBezierPath(ovalIn: bounds).cgPath
@@ -305,13 +305,13 @@ private class TKBubbleCell: CAShapeLayer, CAAnimationDelegate {
     }
     
     // beginTime 本来是留给小球轮播用的, 但是效果不好就没用了
-    internal func positionChange(_ direction: TKMoveDirection, radius: CGFloat, duration: CFTimeInterval, beginTime: CFTimeInterval){
+    func positionChange(_ direction: TKMoveDirection, radius: CGFloat, duration: CFTimeInterval, beginTime: CFTimeInterval){
         
-        let toLeft = direction.toBool()
+        let toLeft = direction.toLeft()
         let movePath = UIBezierPath()
         var center = CGPoint.zero
-        let startAngle = toLeft ? 0 : CGFloat(M_PI)
-        let endAngle   = toLeft ? CGFloat(M_PI) : 0
+        let startAngle = toLeft ? 0 : CGFloat.pi
+        let endAngle   = toLeft ? CGFloat.pi : 0
         center.x += radius * (toLeft ? -1 : 1)
         lastDirection = direction
         
@@ -368,7 +368,7 @@ private class TKBubbleCell: CAShapeLayer, CAAnimationDelegate {
                 CATransaction.setAnimationDuration(0) 
                 CATransaction.setDisableActions(true)
                 var point = cachePosition
-                point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toBool() ? -1 : 1)
+                point.x += (styleConfig.smallBubbleSize + styleConfig.bubbleXOffsetSpace) * CGFloat(lastDirection.toLeft() ? -1 : 1)
                 position = point
                 opacity = 1
                 CATransaction.commit()

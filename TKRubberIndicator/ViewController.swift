@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     @IBAction func pageCountChange(_ sender: UISegmentedControl) {
         page.numberOfpage = sender.selectedSegmentIndex + 3
     }
-    func targetActionValueChange(_ page:TKRubberPageControl){
+    @objc func targetActionValueChange(_ page:TKRubberPageControl){
         print("Target-Action : Page is \(page.currentIndex)")
     }
 
