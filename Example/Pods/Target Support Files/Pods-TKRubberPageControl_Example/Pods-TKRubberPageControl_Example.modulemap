@@ -1,0 +1,6 @@
+framework module Pods_TKRubberPageControl_Example {
+  umbrella header "Pods-TKRubberPageControl_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'TKRubberPageControl_Example' do
+  pod 'TKRubberPageControl', :path => '../'
+
+  target 'TKRubberPageControl_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

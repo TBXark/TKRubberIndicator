@@ -1,0 +1,16 @@
+PODS:
+  - TKRubberPageControl (1.4.0)
+
+DEPENDENCIES:
+  - TKRubberPageControl (from `../`)
+
+EXTERNAL SOURCES:
+  TKRubberPageControl:
+    :path: ../
+
+SPEC CHECKSUMS:
+  TKRubberPageControl: 0eea65be56db49fc264402beb94fdc36b7dcd34f
+
+PODFILE CHECKSUM: b259ee75e85a254abee0a0821e8e1e02e0522bed
+
+COCOAPODS: 1.4.0
