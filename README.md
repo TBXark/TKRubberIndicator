@@ -10,7 +10,7 @@
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
 
 
-![](/Example/example.gif)
+![](/Example/demo.gif)
 
 ## Requirements
 
