@@ -14,10 +14,10 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>TKRubberPageControl.xcscheme</key>
+		<key>TKRubberPageControl.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>isShown</key>
-			<false/>
+			<true/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
