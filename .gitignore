@@ -1,6 +1,3 @@
-Last login: Thu Jan 25 23:54:12 on ttys000
-➜  ~ gi swift
-
 # Created by https://www.gitignore.io/api/swift
 
 ### Swift ###
@@ -63,4 +60,3 @@ fastlane/test_output
 
 
 # End of https://www.gitignore.io/api/swift
-➜  ~
