@@ -49,7 +49,7 @@ github "tbxark/TKRubberIndicator"
 
 You can use closure or Target-Action to listen control event
 
-```
+```swift
 class ViewController: UIViewController {
 
     let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
