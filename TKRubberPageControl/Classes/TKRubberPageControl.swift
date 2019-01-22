@@ -67,10 +67,10 @@ open class TKRubberPageControl: UIControl {
             }
         }
     }
-    // 当前 Index
     open var currentIndex  = 0 {
         didSet {
-            changeIndexToValue(currentIndex)
+            guard oldValue != currentIndex else { return }
+            setCurrentIndex(currentIndex, updateLayer: true)
         }
     }
     // 事件闭包
@@ -172,7 +172,7 @@ open class TKRubberPageControl: UIControl {
 
         // 增加点击手势
         if indexTap == nil {
-            let tap = UITapGestureRecognizer(target: self, action: #selector(TKRubberPageControl.tapValueChange(_: )))
+            let tap = UITapGestureRecognizer(target: self, action: #selector(TKRubberPageControl.handleTapGestureRecognizer(_: )))
             addGestureRecognizer(tap)
             indexTap = tap
         }
@@ -180,60 +180,63 @@ open class TKRubberPageControl: UIControl {
 
      // 重置控件
     open func resetRubberIndicator() {
-        changeIndexToValue(0)
         smallBubbles.forEach { $0.removeFromSuperlayer() }
         smallBubbles.removeAll()
         setUpView()
+        setCurrentIndex(0, updateLayer: false)
     }
 
     // 手势事件
-    @objc private func tapValueChange(_ ges: UITapGestureRecognizer) {
+    @objc private func handleTapGestureRecognizer(_ ges: UITapGestureRecognizer) {
         let point = ges.location(in: self)
         if point.y > yPointbegin && point.y < yPointEnd && point.x > xPointbegin && point.x < xPointEnd {
             let index = Int(point.x - xPointbegin) / Int(styleConfig.smallBubbleMoveRadius)
-            changeIndexToValue(index)
+            setCurrentIndex(index, updateLayer: true)
         }
     }
 
     // Index值变化
-    private func changeIndexToValue(_ valueIndex: Int) {
-        var index = valueIndex
-        if index >= numberOfpage { index = numberOfpage - 1 }
-        if index < 0 { index = 0 }
-        if index == currentIndex { return }
-
-        let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
-        let range     = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
-
-        // 小球动画
-        for index in range {
-            let smallBubbleIndex = (direction.toLeft()) ? (index - 1) : (index)
-            let smallBubble      = smallBubbles[smallBubbleIndex]
-            smallBubble.positionChange(direction,
-                                       radius: styleConfig.smallBubbleMoveRadius / 2,
-                                       duration: styleConfig.animationDuration,
-                                       beginTime: CACurrentMediaTime())
+    private func setCurrentIndex(_ newIndex: Int, updateLayer: Bool) {
+        let index = max(0, min(newIndex, numberOfpage - 1))
+        guard index != currentIndex else { return }
+       
+        if updateLayer {
+            // 大球运动方向
+            let direction = (currentIndex > index) ? TKMoveDirection.right : TKMoveDirection.left
+            
+            // 需要运动的小球的范围
+            let range     = (currentIndex < index) ? (currentIndex+1)...index : index...(currentIndex-1)
+            
+            // 小球动画
+            for index in range {
+                let smallBubbleIndex = (direction.toLeft()) ? (index - 1) : (index)
+                let smallBubble      = smallBubbles[smallBubbleIndex]
+                smallBubble.positionChange(direction,
+                                           radius: styleConfig.smallBubbleMoveRadius / 2,
+                                           duration: styleConfig.animationDuration,
+                                           beginTime: CACurrentMediaTime())
+            }
+            
+            // 大球缩放动画
+            let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
+            bubbleTransformAnim.values   = [NSValue(caTransform3D: CATransform3DIdentity),
+                                            NSValue(caTransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
+                                            NSValue(caTransform3D: CATransform3DIdentity)]
+            bubbleTransformAnim.keyTimes = [0, 0.5, 1]
+            bubbleTransformAnim.duration = styleConfig.animationDuration
+            
+            // 大球移动动画, 用隐式动画大球的位置会真正的改变
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(styleConfig.animationDuration)
+            let x = xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(index) + styleConfig.mainBubbleSize/2
+            mainBubble.position.x = x
+            backgroundLayer.position.x = x
+            CATransaction.commit()
+            mainBubble.add(bubbleTransformAnim, forKey: "Scale")
         }
+
+        // 变更`currentIndex`
         currentIndex = index
-
-        // 大球缩放动画
-        let bubbleTransformAnim      = CAKeyframeAnimation(keyPath: "transform")
-        bubbleTransformAnim.values   = [NSValue(caTransform3D: CATransform3DIdentity),
-                                        NSValue(caTransform3D: CATransform3DMakeScale(bubbleScale, bubbleScale, 1)),
-                                        NSValue(caTransform3D: CATransform3DIdentity)]
-        bubbleTransformAnim.keyTimes = [0, 0.5, 1]
-        bubbleTransformAnim.duration = styleConfig.animationDuration
-
-        // 大球移动动画, 用隐式动画大球的位置会真正的改变
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(styleConfig.animationDuration)
-        let x = xPointbegin + styleConfig.smallBubbleMoveRadius * CGFloat(currentIndex) + styleConfig.mainBubbleSize/2
-        mainBubble.position.x = x
-        backgroundLayer.position.x = x
-        CATransaction.commit()
-
-        mainBubble.add(bubbleTransformAnim, forKey: "Scale")
-
         // 可以使用 Target-Action 监听事件
         sendActions(for: UIControlEvents.valueChanged)
         // 也可以使用 闭包 监听事件

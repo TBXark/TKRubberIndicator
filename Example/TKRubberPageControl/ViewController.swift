@@ -19,8 +19,10 @@ class ViewController: UIViewController {
         
 //        view.backgroundColor = UIColor.white
         page.center = view.center
-        page.valueChange = {(num) -> Void in
+        page.valueChange = {[weak self] (num) -> Void in
+            guard let self = self else { return }
             print("Closure : Page is \(num)")
+            print("Value   : Page is \(self.page.currentIndex)")
         }
         page.addTarget(self, action: #selector(ViewController.targetActionValueChange(_:)), for: UIControlEvents.valueChanged)
         view.addSubview(page)
@@ -31,6 +33,7 @@ class ViewController: UIViewController {
     
     @IBAction func pageCountChange(_ sender: UISegmentedControl) {
         page.numberOfpage = sender.selectedSegmentIndex + 3
+        print("Value   : Page is \(self.page.currentIndex)")
     }
     @objc func targetActionValueChange(_ page:TKRubberPageControl){
         print("Target-Action : Page is \(page.currentIndex)")
