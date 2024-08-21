@@ -1,3 +1,2 @@
-*.h linguist-language=swift
-*.m linguist-language=swift
-*.sh linguist-language=swift
+Example/** linguist-generated=true
+_Pods.xcodeproj/** linguist-generated=true
