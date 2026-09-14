@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build, test and lint
+    runs-on: macos-15
+    env:
+      DERIVED_DATA: .build/DerivedData
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Validate package manifest
+        run: swift package dump-package > /dev/null
+
+      - name: Resolve simulator
+        id: simulator
+        run: |
+          NAME=$(xcrun simctl list devices available | sed -n 's/^ *\(iPhone[^(]*\)(.*/\1/p' | head -1 | sed 's/ *$//')
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Build library for iOS
+        run: |
+          xcodebuild -scheme TKRubberPageControl \
+            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -derivedDataPath "$DERIVED_DATA" \
+            build
+
+      - name: Run tests
+        run: |
+          xcodebuild -scheme TKRubberPageControl \
+            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -derivedDataPath "$DERIVED_DATA" \
+            test
+
+      - name: Check formatting
+        run: swift format lint --recursive --strict Sources Tests Demo/Sources
+
+      - name: Generate demo project
+        run: |
+          brew install xcodegen
+          cd Demo && xcodegen generate
+
+      - name: Build demo app
+        run: |
+          xcodebuild -project Demo/TKRubberPageControlDemo.xcodeproj \
+            -scheme TKRubberPageControlDemo \
+            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -derivedDataPath "$DERIVED_DATA" \
+            build
+
+      - name: Lint podspec
+        run: pod lib lint TKRubberPageControl.podspec --allow-warnings --quick

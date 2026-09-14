@@ -1,6 +1,0 @@
-framework module TKRubberPageControl {
-  umbrella header "TKRubberPageControl-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -1,136 +1,172 @@
-# TKRubberIndicator
-> A rubber animation pagecontrol
+# TKRubberPageControl
 
-![Xcode 9.0+](https://img.shields.io/badge/Xcode-9.0%2B-blue.svg)
-![iOS 8.0+](https://img.shields.io/badge/iOS-8.0%2B-blue.svg)
-![Swift 4.0+](https://img.shields.io/badge/Swift-4.0%2B-orange.svg)
-[![Build Status](https://travis-ci.org/TBXark/TKRubberIndicator.svg?branch=master)](https://travis-ci.org/TBXark/TKRubberIndicator)
-[![CocoaPods](http://img.shields.io/cocoapods/v/TKRubberPageControl.svg?style=flat)](http://cocoapods.org/?q=TKRubberPageControl)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/TBXark/TKRubberIndicator/master/LICENSE)
+> A rubber animation page control for UIKit and SwiftUI.
 
+![Demo](Demo/Resources/demo.gif)
 
-![](/Example/demo.gif)
+English | [中文说明](./README.zh-CN.md)
+
+## Features
+
+- The original rubber animation: the big bubble travels between pages, the
+  small bubbles hop along a half circle under the bar and squash in flight.
+- A `UIControl` based UIKit implementation, source compatible with 1.x.
+- A native, `Binding` driven SwiftUI implementation with no `UIViewRepresentable`.
+- Both implementations share the same layout model, so they look identical.
+- Style configuration, dark mode support and basic accessibility.
 
 ## Requirements
 
-- Swift 4.0
-- iOS 8.0+
-- Xcode 9.0
+- iOS 13.0+
+- Swift 5.9+
+- Xcode 15+
 
 ## Installation
 
-#### CocoaPods
-You can use [CocoaPods](http://cocoapods.org/) to install `TKRubberPageControl` by adding it to your `Podfile`:
+### Swift Package Manager
 
-```ruby
-platform :ios, '8.0'
-use_frameworks!
-pod 'TKRubberPageControl'
-```
-
-To get the full benefits import `TKRubberPageControl` wherever you import UIKit
-
-``` swift
-import UIKit
-import TKRubberPageControl
-```
-#### Carthage
-Create a `Cartfile` that lists the framework and run `carthage update`. Follow the [instructions](https://github.com/Carthage/Carthage#if-youre-building-for-ios) to add `$(SRCROOT)/Carthage/Build/iOS/TKRubberPageControl.framework` to an iOS project.
+Add the package in Xcode via **File → Add Package Dependencies**:
 
 ```
-github "tbxark/TKRubberIndicator"
+https://github.com/TBXark/TKRubberIndicator
 ```
-#### Manually
-1. Download and drop ```TKRubberPageControl.swift``` in your project.  
-2. Congratulations!  
 
-## Usage example
-
-You can use closure or Target-Action to listen control event
+Or add it to your `Package.swift`:
 
 ```swift
-class ViewController: UIViewController {
+dependencies: [
+    .package(url: "https://github.com/TBXark/TKRubberIndicator.git", from: "2.0.0")
+]
+```
 
-    let page = TKRubberIndicator(frame: CGRectMake(100, 100, 200, 100), count: 6)
+### CocoaPods
+
+```ruby
+pod 'TKRubberPageControl', '~> 2.0'
+```
+
+## Usage
+
+### UIKit
+
+```swift
+import TKRubberPageControl
+import UIKit
+
+final class ViewController: UIViewController {
+
+    private let pageControl = TKRubberPageControl(frame: .zero, count: 5)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
-        self.view.backgroundColor = UIColor(red:0.553,  green:0.376,  blue:0.549, alpha:1)
-        page.center = self.view.center
-        page.valueChange = {(num) -> Void in
-            print("Closure : Page is \(num)")
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.addTarget(
+            self,
+            action: #selector(pageChanged(_:)),
+            for: .valueChanged
+        )
+        pageControl.valueChange = { index in
+            print("page is \(index)")
         }
-        page.addTarget(self, action: "targetActionValueChange:", forControlEvents: UIControlEvents.ValueChanged)
-        self.view.addSubview(page)
 
-        page.numberOfpage = 2
+        view.addSubview(pageControl)
+        NSLayoutConstraint.activate([
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pageControl.widthAnchor.constraint(equalToConstant: 220),
+            pageControl.heightAnchor.constraint(equalToConstant: 100),
+        ])
     }
 
-    @IBAction func pageCountChange(sender: UISegmentedControl) {
-        page.numberOfpage = (sender.selectedSegmentIndex + 1) * 2
-    }
-    func targetActionValueChange(page:TKRubberIndicator){
-        print("Target-Action : Page is \(page.currentIndex)")
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    @objc private func pageChanged(_ sender: TKRubberPageControl) {
+        print("page is \(sender.currentIndex)")
     }
 }
-
 ```
 
-### Base
+Assigning `currentIndex` animates and fires the events too. Assigning
+`numberOfPage` or `styleConfig` rebuilds the indicator and resets the selection
+to `0`:
 
-|Key | Usage| |
+```swift
+pageControl.currentIndex = 2   // animates to page 2
+pageControl.numberOfPage = 4   // rebuilds, back to page 0
+```
+
+### SwiftUI
+
+```swift
+import SwiftUI
+import TKRubberPageControl
+
+struct ContentView: View {
+    @State private var page = 0
+
+    var body: some View {
+        RubberPageControl(selection: $page, pageCount: 5)
+            .frame(width: 220, height: 100)
+    }
+}
+```
+
+The selection lives in the binding, so the control updates itself whenever the
+state changes and writes back when the user taps it. On iOS 15 and later those
+changes animate automatically; on iOS 13 and 14 wrap the assignment in
+`withAnimation`:
+
+```swift
+withAnimation {
+    page = 3
+}
+```
+
+## Customization
+
+`TKRubberPageControlConfig` and `RubberPageControlStyle` expose the same
+options; both default to the colours and sizes of the 1.x releases.
+
+| Option | Description | Default |
 |---|---|---|
-|smallBubbleSize|未选中小球尺寸|unselect  small ball size|
-|mainBubbleSize|选中大球尺寸|select big ball size|
-|bubbleXOffsetSpace|小球间距|The distance between the ball|
-|bubbleYOffsetSpace|纵向间距|bubble Y Offset Space|
-|animationDuration|动画时长|animation duration|
-|backgroundColor|背景颜色|control background color|
-|smallBubbleColor|小球颜色|unselect small ball color|
-|mainBubbleColor|大球颜色|select big ball color|
+| `smallBubbleSize` | Diameter of the small bubbles | `16` |
+| `mainBubbleSize` | Diameter of the bump behind the selected bubble | `40` |
+| `bubbleXOffsetSpace` / `bubbleSpacing` | Spacing between bubbles | `12` |
+| `bubbleYOffsetSpace` / `verticalPadding` | Vertical padding of the bar | `8` |
+| `animationDuration` | Page change animation duration | `0.2` |
+| `backgroundColor` / `barColor` | Bar and bump color | plum |
+| `smallBubbleColor` | Small bubble color | coral |
+| `bigBubbleColor` | Big bubble color | crimson |
 
+UIKit:
 
-## Release History
+```swift
+var config = TKRubberPageControlConfig()
+config.backgroundColor = .systemIndigo
+config.bigBubbleColor = .systemYellow
+let pageControl = TKRubberPageControl(frame: frame, count: 5, config: config)
+```
 
-* 1.4.0
-  Swift 4.0
+SwiftUI:
 
-* 1.3.1
-  Bug Fixed
+```swift
+RubberPageControl(
+    selection: $page,
+    pageCount: 5,
+    style: RubberPageControlStyle(barColor: .indigo, bigBubbleColor: .yellow)
+)
+```
 
-* 1.3.0
-  Support Swift 3.0
+## Demo
 
-* 1.0.5
-  Fix bug, add Cocoapod and Carthage support
+The demo app shows the UIKit and the SwiftUI control side by side. It is
+generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) and consumes
+the library as a local Swift package:
 
-* 1.0.4
-  Complete basic functions
+```bash
+./Scripts/demo.sh
+```
 
-## Contribute
+Or run `make demo`.
 
-We would love for you to contribute to **TKRubberPageControl**, check the ``LICENSE`` file for more info.
+## License
 
-## Meta
-
-TBXark – [@tbxark](https://twitter.com/tbxark) – tbxark@outlook.com
-
-Distributed under the MIT license. See ``LICENSE`` for more information.
-
-[https://github.com/TBXark](https://github.com/TBXark)
-
-[swift-image]:https://img.shields.io/badge/swift-3.0-orange.svg
-[swift-url]: https://swift.org/
-[license-image]: https://img.shields.io/badge/License-MIT-blue.svg
-[license-url]: LICENSE
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[codebeat-image]: https://codebeat.co/badges/c19b47ea-2f9d-45df-8458-b2d952fe9dad
-[codebeat-url]: https://codebeat.co/projects/github-com-vsouza-awesomeios-com
+TKRubberPageControl is available under the MIT license. See [LICENSE](./LICENSE).
