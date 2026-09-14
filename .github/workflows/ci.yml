@@ -20,29 +20,54 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pick the newest Xcode on the image: its SDK is always >= every installed
+      # simulator runtime, so each runtime stays usable. Pinning an older Xcode
+      # fails when the image only ships newer runtimes (e.g. Xcode 16.0 with its
+      # iOS 18.0 SDK cannot run the iOS 18.5 runtime), which leaves no iOS
+      # Simulator destination at all.
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.app
+        run: |
+          XCODE=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          echo "Using ${XCODE}"
+          sudo xcode-select -s "${XCODE}"
+          xcodebuild -version
+          xcrun simctl list runtimes
 
       - name: Validate package manifest
         run: swift package dump-package > /dev/null
 
+      # Resolve a concrete iPhone simulator by UDID. Names can be ambiguous
+      # across runtimes, so match on the device id instead.
       - name: Resolve simulator
         id: simulator
         run: |
-          NAME=$(xcrun simctl list devices available | sed -n 's/^ *\(iPhone[^(]*\)(.*/\1/p' | head -1 | sed 's/ *$//')
-          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+          UDID=$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          for entries in devices.values():
+              for entry in entries:
+                  if entry.get("isAvailable") and entry["name"].startswith("iPhone"):
+                      print(entry["udid"])
+                      sys.exit(0)
+          sys.exit(1)
+          ')
+          if [ -z "${UDID}" ]; then
+            echo "error: no available iPhone simulator found." >&2
+            exit 1
+          fi
+          echo "udid=${UDID}" >> "$GITHUB_OUTPUT"
 
       - name: Build library for iOS
         run: |
           xcodebuild -scheme TKRubberPageControl \
-            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}' \
             -derivedDataPath "$DERIVED_DATA" \
             build
 
       - name: Run tests
         run: |
           xcodebuild -scheme TKRubberPageControl \
-            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}' \
             -derivedDataPath "$DERIVED_DATA" \
             test
 
@@ -58,7 +83,7 @@ jobs:
         run: |
           xcodebuild -project Demo/TKRubberPageControlDemo.xcodeproj \
             -scheme TKRubberPageControlDemo \
-            -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.name }}' \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}' \
             -derivedDataPath "$DERIVED_DATA" \
             build
 
